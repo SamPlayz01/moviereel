@@ -982,7 +982,7 @@ async function submitMovie(e){
   }finally{b.disabled=false}
 }
 
-/* ---------- admin panel (the server only answers for SamPlayz@Vyron) ---------- */
+/* ---------- admin panel (the server only answers for the vyron account) ---------- */
 let AD={users:[],tab:"pending",subs:[],o:null};
 const ago=iso=>{const s=(Date.now()-new Date(iso))/1000;if(!(s>=0))return"—";if(s<90)return"just now";if(s<3600)return Math.round(s/60)+" min ago";if(s<86400)return Math.round(s/3600)+" h ago";return Math.round(s/86400)+" d ago"};
 const adminShell=inner=>`<div><section class="wrap" style="padding-top:112px"><div class="sh"><div><span class="adm-tag">${I("shield")} Admin</span><h2 style="font-size:clamp(34px,5vw,56px);margin-top:10px">Control room</h2></div><button class="btn sm g" data-act="adrefresh">${I("shuf")} Refresh</button></div>${inner}</section></div>`;
