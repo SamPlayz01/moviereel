@@ -40,7 +40,7 @@ nav.s{background:rgba(2,2,2,.78);backdrop-filter:blur(18px);-webkit-backdrop-fil
 .sf input{background:none;border:0;outline:0;width:100%;font-size:14px}
 .sf input::placeholder{color:var(--m)}
 .badge{background:var(--r);color:#fff;font-size:11px;font-weight:700;border-radius:99px;padding:1px 7px;min-width:20px;text-align:center}
-.mb{display:none}
+.mb{display:none}.mb[hidden]{display:none!important}#madm{position:relative}#madm .dot{position:absolute;right:2px;top:2px;min-width:16px;height:16px;border-radius:99px;background:var(--r);color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;padding:0 4px;border:2px solid #050505}
 /* buttons */
 .btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 22px;border-radius:12px;background:var(--r);color:#fff;font-weight:600;transition:transform .2s var(--ease),background .2s,box-shadow .2s;box-shadow:0 8px 30px -8px rgba(176,15,29,.7)}
 .btn:hover{background:var(--r2);transform:translateY(-2px)}
@@ -350,6 +350,9 @@ a.cm{display:block;transition:transform .3s var(--bounce)}a.cm:hover{transform:t
 .sug p{font-size:11px;color:var(--m);padding:6px 10px;margin:0;text-transform:none;letter-spacing:0;font-weight:400}
 .sug button{display:flex;justify-content:space-between;gap:10px;width:100%;padding:9px 10px;border-radius:10px;text-align:left;color:var(--t);font-size:14px;text-transform:none;letter-spacing:0;font-weight:500}
 .sug button:hover{background:rgba(176,15,29,.22)}.sug button span{color:var(--m)}
+.wbox{background:rgba(255,255,255,.04);border:1px solid var(--l2);border-radius:16px;padding:14px 16px;margin-bottom:20px;display:grid;gap:10px}.wbox>b{font-size:14px}.wbox>b small{color:var(--m);font-weight:600}.wbox>small{font-size:11px}.wbox a{color:var(--r2);text-decoration:underline}
+.wrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.wrow>span:first-child{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--m);min-width:52px}
+.wp{display:inline-flex;align-items:center;gap:7px;background:#0b0b0b;border:1px solid var(--l2);border-radius:99px;padding:3px 11px 3px 4px;font-size:12px;font-weight:600}.wp img{width:22px;height:22px;border-radius:50%;object-fit:cover}.wnone{font-size:13px;margin-bottom:20px}
 .apv{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--m);text-transform:none;letter-spacing:0}.apv img{width:54px;border-radius:8px;border:1px solid var(--l2)}
 .addg aside h3{font-size:20px}
 .mys{list-style:none;display:grid;gap:8px;margin-top:12px}
@@ -400,6 +403,7 @@ a.cm{display:block;transition:transform .3s var(--bounce)}a.cm:hover{transform:t
   <span class="sp"></span>
   <form class="sf" id="nsf" role="search"><span id="ic-s"></span><input id="nq" placeholder="Title, actor, director, genre" aria-label="Search movies"></form>
   <button class="ib" id="rnd" title="Random movie" aria-label="Random movie"></button>
+  <a class="ib mb" href="#/admin" id="madm" aria-label="Admin panel" title="Admin panel" hidden></a>
   <a class="ib mb" href="#/add" id="madd" aria-label="Add a movie"></a>
   <a class="ib mb" href="#/saved" id="mwl" aria-label="Saved movies"></a>
   <button class="ib" id="keyb" title="TMDB settings" aria-label="Settings"></button>
@@ -599,12 +603,17 @@ async function safe(l,d){
 function nl(r){const g=r.genre_ids||[];return{id:String(r.id),title:r.title||r.name||"Untitled",year:r.release_date?+r.release_date.slice(0,4):null,genreIds:g,genres:g.map(i=>GEN[i]).filter(Boolean),rating:r.vote_average?Math.round(r.vote_average*10)/10:0,overview:r.overview||"No synopsis available yet.",poster:img(r.poster_path,"w342"),backdrop:img(r.backdrop_path,"w1280"),language:r.original_language||"",runtime:null,director:null,cast:[],tagline:"",detailed:false}}
 function nd(r){const b=nl({...r,genre_ids:(r.genres||[]).map(g=>g.id)}),cr=r.credits||{};
   const dirs=[...new Set((cr.crew||[]).filter(c=>c.job==="Director").map(c=>c.name))];
-  return{...b,poster:img(r.poster_path,"w500"),genres:(r.genres||[]).map(g=>g.name),runtime:r.runtime||null,tagline:r.tagline||"",director:dirs.join(", ")||null,cast:(cr.cast||[]).slice(0,12).map(c=>({id:String(c.id),name:c.name,character:c.character,photo:img(c.profile_path,"w185")})),detailed:true}}
+  return{...b,poster:img(r.poster_path,"w500"),genres:(r.genres||[]).map(g=>g.name),runtime:r.runtime||null,tagline:r.tagline||"",director:dirs.join(", ")||null,cast:(cr.cast||[]).slice(0,12).map(c=>({id:String(c.id),name:c.name,character:c.character,photo:img(c.profile_path,"w185")})),trailer:pickTrailer(r.videos),watch:pickWatch(r["watch/providers"]),detailed:true}}
+// official YouTube trailer if there is one (opens on YouTube in a new tab)
+function pickTrailer(v){const l=((v&&v.results)||[]).filter(x=>x.site==="YouTube"&&/^[\w-]{6,20}$/.test(x.key||"")&&/^(Trailer|Teaser)$/.test(x.type));const t=l.find(x=>x.type==="Trailer"&&x.official)||l.find(x=>x.type==="Trailer")||l[0];return t?t.key:null}
+// streaming options for the viewer's own country (from the browser language), as listed by TMDB / JustWatch
+const REGION=(()=>{try{const m=/-([A-Za-z]{2})\b/.exec(navigator.language||"");return m?m[1].toUpperCase():"US"}catch(e){return"US"}})();
+function pickWatch(w){const r=w&&w.results&&w.results[REGION];if(!r)return{region:REGION,none:true};const f=a=>(a||[]).slice(0,8).map(x=>({n:String(x.provider_name||"").slice(0,40),l:img(x.logo_path,"w92")})).filter(x=>x.n);return{region:REGION,link:/^https:\/\/www\.themoviedb\.org\//.test(r.link||"")?r.link:null,stream:f(r.flatrate),rent:f(r.rent),buy:f(r.buy)}}
 function reg(list){for(const m of list){const o=CACHE.get(m.id);if(!o||(m.detailed&&!o.detailed))CACHE.set(m.id,m)}return list}
 async function details(id){
   if(/^c\d+$/.test(id)){await loadCommunity();const c=DET.get(id);if(!c)throw new Error("nf");return c}
   if(DET.has(id))return DET.get(id);
-  const m=await safe(async()=>nd(await tm("/movie/"+id,{append_to_response:"credits"})),async()=>{const d=DEMO.find(x=>x.id===id);if(!d)throw new Error("nf");return d});
+  const m=await safe(async()=>nd(await tm("/movie/"+id,{append_to_response:"credits,videos,watch/providers"})),async()=>{const d=DEMO.find(x=>x.id===id);if(!d)throw new Error("nf");return d});
   DET.set(id,m);reg([m]);return m;
 }
 const complete=m=>m.demo||(m.poster&&m.overview&&m.overview!=="No synopsis available yet.");
@@ -651,7 +660,8 @@ const search=(q,f,page)=>safe(async()=>{
 });
 
 /* ---------- saved movies: stored per UniClvrPass account in your MoodFlix Supabase ---------- */
-const SAVES_URL="https://vhofjestswkctewkvzvy.supabase.co/functions/v1/saves";
+const SB_PUB="https://vhofjestswkctewkvzvy.supabase.co";
+const SAVES_URL=SB_PUB+"/functions/v1/saves";
 const SC="mr_saved_v1:",OLD="mr_watchlist_v1";
 let WL=[],UID="";const busy=new Set();
 class SaveAuthError extends Error{}
@@ -667,7 +677,7 @@ async function sv(body){
 }
 // a token UniClvrPass no longer accepts (expired, logged out, account deleted): back to the sign-in screen
 function expire(msg){clearSession();history.replaceState(null,"","#/");showGate(msg||"Your session has expired. Please sign in again.")}
-const okPoster=p=>typeof p==="string"&&/^https:\/\/image\.tmdb\.org\/t\/p\/[\w\/.-]+$/.test(p);
+const okPoster=p=>typeof p==="string"&&p.length<=300&&(/^https:\/\/image\.tmdb\.org\/t\/p\/[\w\/.-]+$/.test(p)||p.startsWith(SB_PUB+"/storage/v1/object/public/posters/")&&/^[\w\/.-]+$/.test(p.slice(SB_PUB.length))&&!p.includes(".."));
 const tidy=l=>(Array.isArray(l)?l:[]).filter(m=>m&&/^[\w-]{1,32}$/.test(String(m.id))).map(m=>({...m,id:String(m.id),poster:okPoster(m.poster)?m.poster:null,genres:Array.isArray(m.genres)?m.genres:[],cast:[]}));
 const snap=m=>({id:m.id,title:m.title,year:m.year||null,rating:m.rating||0,genres:(m.genres||[]).slice(0,6),genreIds:(m.genreIds||[]).slice(0,10),poster:okPoster(m.poster)?m.poster:null,language:m.language||"",overview:(m.overview||"").slice(0,500)});
 function loadWL(uid){
@@ -733,7 +743,7 @@ async function localSimilar(m){
   const more=await safe(async()=>m.genreIds.length?withPoster(reg((await tm("/discover/movie",{with_genres:m.genreIds.slice(0,2).join(","),sort_by:"popularity.desc","vote_count.gte":"1000",include_adult:"false"})).results.map(nl))).slice(0,12):[],async()=>reg(DEMO.filter(x=>x.moods.some(k=>m.moods.includes(k))).slice(0,10)));
   return uniq([...mine,...more]);
 }
-function setPend(n){const b=$("#apend");if(b){b.textContent=n;b.hidden=!n}}
+function setPend(n){const b=$("#apend");if(b){b.textContent=n;b.hidden=!n}const m=$("#madm");if(m){let d=m.querySelector(".dot");if(!n){d&&d.remove()}else{if(!d){d=document.createElement("span");d.className="dot";m.appendChild(d)}d.textContent=n>9?"9+":n}}}
 function syncWL(){$$("[data-wl]").forEach(b=>{const on=inWL(b.dataset.wl);b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);const l=$(".lbl",b);if(l)l.textContent=on?"Saved":"Save"})}
 
 /* ---------- templates ---------- */
@@ -824,6 +834,12 @@ async function moreMood(btn){
   btn.disabled=false;btn.textContent="Show more";$("#mm").hidden=!r.more;syncWL();hydrate(fresh);
 }
 
+const watchRow=(l,t)=>l&&l.length?`<div class="wrow"><span>${t}</span>${l.map(x=>`<span class="wp" title="${esc(x.n)}">${x.l?`<img src="${x.l}" alt="" loading="lazy" onerror="this.remove()">`:""}${esc(x.n)}</span>`).join("")}</div>`:"";
+function watchBox(m){
+  const w=m.watch;if(!w||m.community||m.demo)return"";
+  if(w.none||!(w.stream.length||w.rent.length||w.buy.length))return`<p class="muted wnone">Not listed on any streaming service in your region (${esc(w.region)}) yet.</p>`;
+  return`<div class="wbox"><b>Where to watch <small>(${esc(w.region)})</small></b>${watchRow(w.stream,"Stream")}${watchRow(w.rent,"Rent")}${watchRow(w.buy,"Buy")}<small class="muted">Streaming data from JustWatch, via TMDB.${w.link?` <a href="${w.link}" target="_blank" rel="noopener noreferrer">See the full list</a>`:""}</small></div>`;
+}
 async function moviePage(id){
   const t=++RT;setPage(`<div class="dh"><div class="wrap"><div class="dgrid"><div class="sk dposter"></div><div><div class="sk" style="height:60px;width:70%;margin-bottom:16px"></div><div class="sk" style="height:140px"></div></div></div></div></div>`,"movie");
   let m;try{m=await details(id)}catch(e){if(t===RT)notFound("We couldn't load that movie.");return}
@@ -836,7 +852,8 @@ async function moviePage(id){
   <div class="dinfo"><span class="eyebrow">${m.year||""}${m.runtime?" · "+rtm(m.runtime):""}</span><h1>${esc(m.title)}</h1>${m.tagline?`<p class="tag">“${esc(m.tagline)}”</p>`:""}${m.community?`<p class="tag">Added by ${esc(shown(m.by))}</p>`:""}
   <div class="row"><span class="pill" title="Audience rating out of 10">${I(m.community?"spark":"star")}${m.community?"Community pick":m.rating?m.rating.toFixed(1)+" / 10":"Not rated"}</span>${(m.genres||[]).map(g=>`<a class="chip" href="#/search?genre=${GID[g]||""}">${esc(g)}</a>`).join("")}</div>
   <p class="full">${esc(m.overview)}</p>
-  <div class="row" style="margin-bottom:20px">${fullWL(m)}<button class="btn g" data-act="random">${I("shuf")} Random movie</button></div>
+  <div class="row" style="margin-bottom:20px">${fullWL(m)}${m.trailer?`<a class="btn g" href="https://www.youtube.com/watch?v=${m.trailer}" target="_blank" rel="noopener noreferrer">${I("play")} Watch trailer</a>`:""}<button class="btn g" data-act="random">${I("shuf")} Random movie</button></div>
+  ${watchBox(m)}
   ${mo.length?`<div class="row" style="margin-bottom:20px"><span class="muted" style="font-size:13px">Fits your mood when you're</span>${mo.map(x=>`<a class="chip" href="#/mood/${x.id}">${I(x.ic)}${x.name}</a>`).join("")}</div>`:""}
   <div class="facts"><div class="fact"><small>Director</small><span>${esc(m.director||"—")}</span></div><div class="fact"><small>Runtime</small><span>${rtm(m.runtime)||"—"}</span></div><div class="fact"><small>Language</small><span>${esc(LANG[m.language]||(m.language||"—").toUpperCase())}</span></div><div class="fact"><small>Released</small><span>${m.year||"—"}</span></div></div>
   </div></div></div></section>${cast}
@@ -931,7 +948,8 @@ const chipSet=(list,sel,act)=>list.map(([v,l])=>{const on=sel.map(String).includ
 function paintAF(){
   $("#af-g").innerHTML=chipSet(Object.entries(GEN),AF.genreIds,"gtog");
   $("#af-m").innerHTML=chipSet(MOODS.map(m=>[m.id,m.name]),AF.moods,"mtog");
-  $("#af-poster").innerHTML=AF.poster?`<div class="apv"><img src="${esc(AF.poster)}" alt="" onerror="this.remove()"><span>Poster from TMDB</span><button type="button" class="chip" data-act="rmposter">Remove</button></div>`:"";
+  $("#af-poster").innerHTML=AF.up?`<div class="apv"><span class="sk" style="width:54px;height:80px;border-radius:8px"></span><span>Uploading your poster…</span></div>`:AF.poster?`<div class="apv"><img src="${esc(AF.poster)}" alt="" onerror="this.remove()"><span>${AF.poster.includes("image.tmdb.org")?"Poster from TMDB":"Your uploaded poster"}</span><button type="button" class="chip" data-act="rmposter">Remove</button></div>`:"";
+  const ub=$("#af-up");if(ub){ub.disabled=!!AF.up;ub.lastChild.textContent=AF.poster?" Change poster":" Upload a poster"}
   $("#af-cnt").textContent=AF.overview.length+" / 500";
 }
 async function addPage(){
@@ -946,7 +964,9 @@ async function addPage(){
   <div class="fg"><b>Genres <span class="opt">pick 1 to 4</span></b><div class="chips wrapchips" id="af-g"></div></div>
   <div class="fg"><b>Moods <span class="opt">pick 1 to 3: where should it show up?</span></b><div class="chips wrapchips" id="af-m"></div></div>
   <label>Description<textarea id="af-ov" maxlength="500" placeholder="What's it about? (at least 10 characters)"></textarea><small id="af-cnt">0 / 500</small></label>
-  <div id="af-poster"></div><p class="gmsg" id="amsg" role="alert" style="text-align:left"></p>
+  <div class="fg"><b>Poster <span class="opt">optional: upload a picture of the movie poster</span></b><div id="af-poster"></div>
+  <div><button type="button" class="btn sm g" id="af-up" data-act="pickposter">${I("plus")}<span> Upload a poster</span></button><input type="file" id="af-file" accept="image/jpeg,image/png,image/webp" hidden></div></div>
+  <p class="gmsg" id="amsg" role="alert" style="text-align:left"></p>
   <div><button class="btn" id="afbtn" type="submit">${I("check")} ${me&&me.isAdmin?"Add movie":"Send for review"}</button></div></form>
   <aside><h3>Your movies</h3><p class="muted" style="font-size:13px">Movies you've added and what happened to them.</p><div id="mys"><div class="sk" style="height:72px;border-radius:14px;margin-top:12px"></div></div></aside></div></section></div>`,"add");
   paintAF();loadMine(t);
@@ -982,6 +1002,35 @@ function pickSuggestion(i){
   const want=AF.title;details(String(m.id)).then(d=>{if(AF.title===want&&!AF.director&&d.director){AF.director=d.director.slice(0,80);const el=$("#af-dir");if(el)el.value=AF.director}}).catch(()=>{});
 }
 function toggleIn(arr,v,max){const i=arr.findIndex(x=>String(x)===String(v));if(i>=0)arr.splice(i,1);else if(arr.length<max)arr.push(v);else return false;return true}
+// poster upload: resize in the browser to 400x600 (centre-cropped JPEG under 140 KB), then the saves function stores it
+async function readPoster(file){
+  if(!/^image\/(jpeg|png|webp)$/.test(file.type))throw new Error("Please choose a JPG, PNG or WebP picture.");
+  if(file.size>15e6)throw new Error("That picture is too big. Choose one under 15 MB.");
+  const url=URL.createObjectURL(file);
+  try{
+    const im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error("That picture couldn't be opened."));i.src=url});
+    if(im.naturalWidth<60||im.naturalHeight<60)throw new Error("That picture is too small.");
+    const W=400,H=600,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+    x.fillStyle="#000";x.fillRect(0,0,W,H);
+    const k=Math.max(W/im.naturalWidth,H/im.naturalHeight),w=im.naturalWidth*k,h=im.naturalHeight*k;
+    x.drawImage(im,(W-w)/2,(H-h)/2,w,h);
+    for(const q of [.86,.74,.62,.5,.38]){
+      const b=await new Promise(r=>c.toBlob(r,"image/jpeg",q));
+      if(b&&b.size<=140*1024){const d=await new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(",")[1]);fr.onerror=()=>no(new Error("Couldn't read the picture."));fr.readAsDataURL(b)});return d}
+    }
+    throw new Error("That picture is too detailed. Try a smaller one.");
+  }finally{URL.revokeObjectURL(url)}
+}
+async function uploadPoster(file){
+  const say=(t,bad)=>{const m=$("#amsg");if(m){m.textContent=t;m.className="gmsg"+(bad?" error":"");m.style.textAlign="left"}};
+  if(AF.up)return;const af=AF;af.up=1;paintAF();say("");
+  try{
+    const data=await readPoster(file),d=await sv({action:"upload_poster",data});
+    if(!okPoster(d.url))throw new Error("The upload didn't work. Please try again.");
+    if(AF===af)af.poster=d.url;
+  }catch(e){if(e instanceof SaveAuthError)expire(e.message);else say(e.message||"Couldn't upload that poster.",1)}
+  af.up=0;if(AF===af&&currentPage==="add")paintAF();
+}
 async function submitMovie(e){
   e.preventDefault();const msg=$("#amsg"),b=$("#afbtn");
   const say=(t,bad)=>{msg.textContent=t;msg.className="gmsg"+(bad?" error":"");msg.style.textAlign="left"};
@@ -991,6 +1040,7 @@ async function submitMovie(e){
   if(!AF.genreIds.length)return say("Pick at least one genre.",1);
   if(!AF.moods.length)return say("Pick at least one mood.",1);
   if(AF.overview.trim().length<10)return say("Add a short description (at least 10 characters).",1);
+  if(AF.up)return say("Hold on, your poster is still uploading.",1);
   b.disabled=true;say("Sending…");
   try{
     const d=await sv({action:"submit_movie",movie:{title:AF.title,year:yr,language:AF.language,director:AF.director,genreIds:AF.genreIds.map(Number),moods:AF.moods,overview:AF.overview,poster:AF.poster}});
@@ -1141,6 +1191,7 @@ document.addEventListener("click",e=>{
     case"gtog":case"mtog":{const isG=a.dataset.act==="gtog",arr=isG?AF.genreIds:AF.moods;if(!toggleIn(arr,isG?+a.dataset.v:a.dataset.v,isG?4:3))toast(isG?"Up to 4 genres":"Up to 3 moods");paintAF();break}
     case"sugpick":pickSuggestion(a.dataset.i);break;
     case"rmposter":AF.poster=null;paintAF();break;
+    case"pickposter":{const f=$("#af-file");if(f){f.value="";f.click()}break}
     case"stab":setTab(a.dataset.v);break;
     case"sreview":reviewSub(a.dataset.id,a.dataset.d,a);break;
     case"sdel":deleteSub(a.dataset.id,a);break;
@@ -1148,7 +1199,7 @@ document.addEventListener("click",e=>{
     case"aclear":case"areset":adminAct(a.dataset.act,a.dataset.u);break;
   }
 });
-document.addEventListener("change",e=>{if(e.target.id==="psort"&&PP.p){PP.sort=e.target.value;fillPerson()}});
+document.addEventListener("change",e=>{if(e.target.id==="af-file"){const f=e.target.files&&e.target.files[0];if(f)uploadPoster(f);return}if(e.target.id==="psort"&&PP.p){PP.sort=e.target.value;fillPerson()}});
 document.addEventListener("submit",e=>{if(e.target.id==="af")submitMovie(e)});
 document.addEventListener("click",e=>{const b=$("#af-sug");if(b&&!b.hidden&&!e.target.closest(".sugw"))b.hidden=true});
 document.addEventListener("input",e=>{
@@ -1216,7 +1267,7 @@ function paintMe(){
   if(!me)return;
   const n=shown(me.username);
   $("#mav").innerHTML=avHtml(me.avatar,n);$("#mnm").textContent=n;
-  $("#nadmin").hidden=!me.isAdmin;
+  $("#nadmin").hidden=!me.isAdmin;$("#madm").hidden=!me.isAdmin;
   $("#prh").innerHTML=`<div class="pr-av" id="prav">${avHtml(me.avatar,n)}</div><div><h3>${esc(n)}</h3><p class="muted" style="font-size:13px">${me.avatar?esc(me.avatar.name):"No picture chosen yet"}</p></div>`;
   $("#prrm").hidden=!me.avatar;$("#pradmin").hidden=!me.isAdmin;
   try{if(me.avatar)localStorage.setItem("mr_avatar:"+me.userId,JSON.stringify(me.avatar));else localStorage.removeItem("mr_avatar:"+me.userId)}catch(e){}
@@ -1301,7 +1352,7 @@ $("#out").addEventListener("click",()=>{
 });
 
 /* boot */
-$("#ic-s").innerHTML=I("search");$("#rnd").innerHTML=I("shuf");$("#keyb").innerHTML=I("key");$("#mwl").innerHTML=I("book");$("#madd").innerHTML=I("plus");$("#out").innerHTML=I("out");$("#gmasc").innerHTML=mascot("g");
+$("#ic-s").innerHTML=I("search");$("#rnd").innerHTML=I("shuf");$("#keyb").innerHTML=I("key");$("#mwl").innerHTML=I("book");$("#madd").innerHTML=I("plus");$("#madm").innerHTML=I("shield");$("#out").innerHTML=I("out");$("#gmasc").innerHTML=mascot("g");
 try{["mr_save_token","mr_save_token_uid"].forEach(k=>localStorage.removeItem(k))}catch(e){}
 {const s=getSession();if(s)startApp(s);else showGate()}
 </script>
