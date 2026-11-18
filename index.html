@@ -222,7 +222,9 @@ body.locked .gate{display:flex}
 .me .av{width:28px;height:28px;border-radius:50%;background:rgba(176,15,29,.14);border:1px solid rgba(176,15,29,.4);color:var(--r2);display:grid;place-items:center;font-weight:700;font-size:13px}
 .me .nm{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:720px){.me .nm{display:none}}
-@media(max-width:980px){.mg{grid-template-columns:repeat(2,1fr)}.dg{grid-template-columns:1fr}.sf{display:none}}
+.mbs{display:none}
+#ic-s{display:inline-flex;align-items:center;justify-content:center;padding:6px;margin:-6px;border-radius:8px;cursor:pointer}
+@media(max-width:980px){.mg{grid-template-columns:repeat(2,1fr)}.dg{grid-template-columns:1fr}.sf{display:none}.mbs{display:inline-flex}}
 @media(max-width:720px){.nl{display:none}.dgrid{grid-template-columns:1fr}.dposter{max-width:210px}.hero{padding-top:120px}.feat{min-height:520px}.feat:before{background:linear-gradient(0deg,#020202 12%,rgba(2,2,2,.5) 65%,rgba(2,2,2,.2))}.dc{padding:12px;gap:12px}.di h3{font-size:19px}.mb{display:inline-flex}}
 /* ===== cartoon layer: squash, bounce, wobble ===== */
 .btn{border:2px solid #1b0205;font-weight:700;box-shadow:0 5px 0 var(--dk),0 18px 30px -14px rgba(176,15,29,.8);transition:transform .22s var(--bounce),box-shadow .22s var(--bounce),background .2s}
@@ -500,7 +502,8 @@ body{padding-bottom:env(safe-area-inset-bottom,0)}
   <a class="logo" href="#/"><b><svg viewBox="0 0 24 24"><path d="m6 3 14 9-14 9z"/></svg></b>Moodreel</a>
   <div class="nl"><a href="#/" data-n="home">Discover</a><a href="#/moods" data-n="moods">Moods</a><a href="#/roulette" data-n="roulette">Roulette</a><a href="#/dna" data-n="dna">My DNA</a><a href="#/add" data-n="add">Add movie</a><a href="#/saved" data-n="wl">Saved <span class="badge" id="wcount" hidden>0</span></a><a href="#/powered" data-n="powered">Powered by</a><a href="#/admin" data-n="admin" id="nadmin" hidden>Admin <span class="badge" id="apend" hidden>0</span></a></div>
   <span class="sp"></span>
-  <form class="sf" id="nsf" role="search"><span id="ic-s"></span><input id="nq" placeholder="Title, actor, director, genre" aria-label="Search movies"></form>
+  <form class="sf" id="nsf" role="search"><button type="submit" id="ic-s" aria-label="Search"></button><input id="nq" placeholder="Title, actor, director, genre" aria-label="Search movies"></form>
+  <button class="ib mbs" id="msearch" type="button" aria-label="Search" title="Search"></button>
   <button class="ib" id="rnd" title="Random movie" aria-label="Random movie"></button>
   <a class="ib mb" href="#/admin" id="madm" aria-label="Admin panel" title="Admin panel" hidden></a>
   <a class="ib mb" href="#/add" id="madd" aria-label="Add a movie"></a>
@@ -1567,7 +1570,7 @@ $("#out").addEventListener("click",()=>{
 });
 
 /* boot */
-$("#ic-s").innerHTML=I("search");$("#rnd").innerHTML=I("shuf");$("#keyb").innerHTML=I("key");$("#mwl").innerHTML=I("book");$("#madd").innerHTML=I("plus");$("#madm").innerHTML=I("shield");$("#out").innerHTML=I("out");$("#gmasc").innerHTML=mascot("g");
+$("#ic-s").innerHTML=I("search");$("#msearch").innerHTML=I("search");$("#msearch").addEventListener("click",()=>location.hash="#/search");$("#rnd").innerHTML=I("shuf");$("#keyb").innerHTML=I("key");$("#mwl").innerHTML=I("book");$("#madd").innerHTML=I("plus");$("#madm").innerHTML=I("shield");$("#out").innerHTML=I("out");$("#gmasc").innerHTML=mascot("g");
 try{["mr_save_token","mr_save_token_uid"].forEach(k=>localStorage.removeItem(k))}catch(e){}
 {const s=getSession();if(s)startApp(s);else showGate()}
 setTimeout(()=>{const c=$("#curtain");if(c)c.remove()},1200);
