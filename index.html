@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#020202">
 <title>Moodreel · movies for how you feel</title>
 <meta name="description" content="Pick a mood. Get the perfect movie.">
@@ -420,9 +420,82 @@ a.cm{display:block;transition:transform .3s var(--bounce)}a.cm:hover{transform:t
 .eq{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;height:190px;align-items:end}.eq>div{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}.eq i{display:block;width:100%;border-radius:8px 8px 3px 3px;background:hsl(var(--h) 80% 52%);transform-origin:bottom;animation:rise .8s var(--bounce) both}.eq span .i{width:15px;height:15px;color:var(--m)}@keyframes rise{from{transform:scaleY(0)}}
 @media(max-width:720px){.two,.dcols{grid-template-columns:1fr}.tk{grid-template-columns:110px 1fr;gap:14px}.dnahero{grid-template-columns:1fr}.helix{height:90px;flex-direction:row;width:100%}.helix i{width:9px;height:70px;background:linear-gradient(180deg,hsl(var(--h) 85% 55%),hsl(var(--h) 85% 55%/.15));animation-name:twistv}.lever{display:none}.reels{gap:8px}.mach{padding:20px 14px}@keyframes twistv{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.2)}}}
 @media(prefers-reduced-motion:reduce){.helix i,.eq i,.dbar i,.bulbs i,.reel.sp .rv,.tk{animation:none!important}}
+
+/* --- cinematic layer --- */
+#grain{position:fixed;inset:0;z-index:9000;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain .5s steps(2) infinite}
+@keyframes grain{0%,100%{transform:translate(0,0)}50%{transform:translate(-1.5%,1%)}}
+#vig{position:fixed;inset:0;z-index:8999;pointer-events:none;background:radial-gradient(130% 90% at 50% 10%,transparent 55%,rgba(0,0,0,.55) 100%)}
+#curtain{position:fixed;inset:0;z-index:9999;display:flex;pointer-events:none}
+#curtain i{flex:1;background:#020202;transform-origin:center}
+#curtain i:first-child{animation:cl .9s .15s cubic-bezier(.76,0,.24,1) forwards}
+#curtain i:last-child{animation:cr .9s .15s cubic-bezier(.76,0,.24,1) forwards}
+@keyframes cl{to{transform:translateX(-100%)}}
+@keyframes cr{to{transform:translateX(100%)}}
+.logo b{animation:glowpulse 3.2s ease-in-out infinite}
+@keyframes glowpulse{0%,100%{box-shadow:0 0 24px rgba(176,15,29,.5)}50%{box-shadow:0 0 40px rgba(224,41,58,.85)}}
+.mg .mc,.grid .cw,.rail .cw{animation:cineIn .6s var(--ease) both}
+.mg .mc:nth-child(1),.grid .cw:nth-child(1),.rail .cw:nth-child(1){animation-delay:.03s}
+.mg .mc:nth-child(2),.grid .cw:nth-child(2),.rail .cw:nth-child(2){animation-delay:.07s}
+.mg .mc:nth-child(3),.grid .cw:nth-child(3),.rail .cw:nth-child(3){animation-delay:.11s}
+.mg .mc:nth-child(4),.grid .cw:nth-child(4),.rail .cw:nth-child(4){animation-delay:.15s}
+.mg .mc:nth-child(5),.grid .cw:nth-child(5),.rail .cw:nth-child(5){animation-delay:.19s}
+.mg .mc:nth-child(n+6),.grid .cw:nth-child(n+6),.rail .cw:nth-child(n+6){animation-delay:.22s}
+@keyframes cineIn{from{opacity:0;transform:translateY(22px) scale(.95)}to{opacity:1;transform:none}}
+.card .pw{transition:transform .5s var(--ease),border-color .3s,box-shadow .5s,filter .5s}
+.card:hover .pw{filter:brightness(1.08) saturate(1.12)}
+.pw:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.18) 50%,transparent 60%);transform:translateX(-120%);transition:transform .7s}
+.card:hover .pw:after{transform:translateX(120%)}
+.btn{position:relative;overflow:hidden}
+.btn:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.35) 50%,transparent 60%);transform:translateX(-120%)}
+.btn:hover:after{transform:translateX(120%);transition:transform .6s}
+.hero h1{animation:heroIn 1s var(--ease) both .1s}
+.hero p.lead{animation:heroIn .9s var(--ease) both .3s}
+.hero .row{animation:heroIn .9s var(--ease) both .45s}
+@keyframes heroIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){#grain,#curtain,.logo b,.mg .mc,.grid .cw,.rail .cw,.hero h1,.hero p.lead,.hero .row{animation:none!important}.pw:after,.btn:after{display:none}}
+
+/* --- light mode --- */
+:root[data-theme="light"]{--bg:#f3f1ef;--p:#ffffff;--p2:#efece9;--l:rgba(17,17,20,.09);--l2:rgba(17,17,20,.16);--t:#15151a;--m:#64646e;--dk:#f4d9db;color-scheme:light}
+:root[data-theme="light"] html{color-scheme:light}
+:root[data-theme="light"] nav.s{background:rgba(255,255,255,.82);border-color:var(--l)}
+:root[data-theme="light"] .sf{background:rgba(0,0,0,.035);border-color:var(--l)}
+:root[data-theme="light"] .ib:hover,:root[data-theme="light"] .nl a:hover,:root[data-theme="light"] .nl a.on{background:rgba(0,0,0,.06)}
+:root[data-theme="light"] .btn.g{background:rgba(0,0,0,.04)}
+:root[data-theme="light"] .btn.g:hover{background:rgba(0,0,0,.08)}
+:root[data-theme="light"] .ov{background:rgba(20,16,16,.35)}
+:root[data-theme="light"] .demo{background:rgba(255,255,255,.95);color:#15151a;border-color:var(--l)}
+:root[data-theme="light"] .hero:before{opacity:.6}
+:root[data-theme="light"] .hero:after{opacity:.35}
+:root[data-theme="light"] .tick div{-webkit-text-stroke-color:rgba(0,0,0,.14)}
+:root[data-theme="light"] .tick span:nth-child(3n){-webkit-text-stroke-color:rgba(176,15,29,.55)}
+:root[data-theme="light"] #vig{background:radial-gradient(130% 90% at 50% 10%,transparent 60%,rgba(40,30,30,.18) 100%)}
+:root[data-theme="light"] #grain{opacity:.03}
+:root[data-theme="light"] ::selection{color:#fff}
+
+/* --- low-end performance mode: strip expensive effects for older iPhones/iPads --- */
+[data-perf="low"] #grain,[data-perf="low"] #curtain,[data-perf="low"] #vig{display:none!important}
+[data-perf="low"] .logo b,[data-perf="low"] .mg .mc,[data-perf="low"] .grid .cw,[data-perf="low"] .rail .cw,[data-perf="low"] .hero h1,[data-perf="low"] .hero p.lead,[data-perf="low"] .hero .row,[data-perf="low"] .fade{animation:none!important;opacity:1!important;transform:none!important}
+[data-perf="low"] .pw:after,[data-perf="low"] .btn:after{display:none!important}
+[data-perf="low"] nav.s,[data-perf="low"] .ov,[data-perf="low"] .demo,[data-perf="low"] .wl,[data-perf="low"] .rt,[data-perf="low"] .sf{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+[data-perf="low"] nav.s{background:var(--bg)}
+[data-perf="low"] .card:hover .pw,[data-perf="low"] .mc:hover{transform:none!important;box-shadow:none!important}
+[data-perf="low"] .tick div{animation-duration:70s}
+[data-perf="low"] .sk{animation:none;background:var(--p2)}
+
+/* --- touch / iPad & iPhone scroll optimisation --- */
+nav{padding-top:env(safe-area-inset-top,0)}
+body{padding-bottom:env(safe-area-inset-bottom,0)}
+.rail{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x;scroll-snap-stop:always}
+.rail,.grid{contain:content}
+@media(hover:none){.mc:hover,.card:hover .pw{transform:none}.mc:active{transform:scale(.97)}.card:active .pw{transform:scale(.97)}.wl:hover{transform:none}.wl:active{transform:scale(.92)}.btn:hover{transform:none}.btn:active{transform:scale(.96)}}
+@supports(padding:max(0px)){.wrap{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}}
+#perfTog,#themeTog{font-size:16px}
 </style>
 </head>
 <body class="locked">
+<div id="curtain" aria-hidden="true"><i></i><i></i></div>
+<div id="grain" aria-hidden="true"></div>
+<div id="vig" aria-hidden="true"></div>
 <nav id="nav"><div class="wrap nb">
   <a class="logo" href="#/"><b><svg viewBox="0 0 24 24"><path d="m6 3 14 9-14 9z"/></svg></b>Moodreel</a>
   <div class="nl"><a href="#/" data-n="home">Discover</a><a href="#/moods" data-n="moods">Moods</a><a href="#/roulette" data-n="roulette">Roulette</a><a href="#/dna" data-n="dna">My DNA</a><a href="#/add" data-n="add">Add movie</a><a href="#/saved" data-n="wl">Saved <span class="badge" id="wcount" hidden>0</span></a><a href="#/powered" data-n="powered">Powered by</a><a href="#/admin" data-n="admin" id="nadmin" hidden>Admin <span class="badge" id="apend" hidden>0</span></a></div>
@@ -432,6 +505,8 @@ a.cm{display:block;transition:transform .3s var(--bounce)}a.cm:hover{transform:t
   <a class="ib mb" href="#/admin" id="madm" aria-label="Admin panel" title="Admin panel" hidden></a>
   <a class="ib mb" href="#/add" id="madd" aria-label="Add a movie"></a>
   <a class="ib mb" href="#/saved" id="mwl" aria-label="Saved movies"></a>
+  <button class="ib" id="themeTog" type="button" title="Toggle light / dark" aria-label="Toggle light or dark mode">🌙</button>
+  <button class="ib" id="perfTog" type="button" title="Toggle animation quality" aria-label="Toggle low-end or high-end animations">⚡</button>
   <button class="ib" id="keyb" title="TMDB settings" aria-label="Settings"></button>
   <button class="me" id="meb" type="button" title="Your profile" aria-label="Your profile"><span class="av" id="mav" aria-hidden="true"></span><span class="nm" id="mnm"></span></button>
   <button class="ib" id="out" title="Sign out" aria-label="Sign out"></button>
@@ -1495,6 +1570,30 @@ $("#out").addEventListener("click",()=>{
 $("#ic-s").innerHTML=I("search");$("#rnd").innerHTML=I("shuf");$("#keyb").innerHTML=I("key");$("#mwl").innerHTML=I("book");$("#madd").innerHTML=I("plus");$("#madm").innerHTML=I("shield");$("#out").innerHTML=I("out");$("#gmasc").innerHTML=mascot("g");
 try{["mr_save_token","mr_save_token_uid"].forEach(k=>localStorage.removeItem(k))}catch(e){}
 {const s=getSession();if(s)startApp(s);else showGate()}
+setTimeout(()=>{const c=$("#curtain");if(c)c.remove()},1200);
+
+/* ---------- theme (light/dark) + performance (high/low) ---------- */
+function paintToggles(){
+  const th=document.documentElement.dataset.theme,pf=document.documentElement.dataset.perf;
+  const tt=$("#themeTog"),pt=$("#perfTog");
+  if(tt){tt.textContent=th==="light"?"☀️":"🌙";tt.title="Switch to "+(th==="light"?"dark":"light")+" mode"}
+  if(pt){pt.textContent=pf==="low"?"🐢":"⚡";pt.title="Animation quality: "+(pf==="low"?"Lite (tap for Full)":"Full (tap for Lite)")}
+}
+function setTheme(t,save){document.documentElement.dataset.theme=t;if(save!==false)try{localStorage.setItem("mr_theme",t)}catch(e){}paintToggles()}
+function setPerf(p,save){document.documentElement.dataset.perf=p;if(save!==false)try{localStorage.setItem("mr_perf",p)}catch(e){}paintToggles()}
+(function initPrefs(){
+  let th,pf;
+  try{th=localStorage.getItem("mr_theme")}catch(e){}
+  try{pf=localStorage.getItem("mr_perf")}catch(e){}
+  if(!th)th=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";
+  if(!pf){
+    const lowMem=(navigator.deviceMemory||8)<=4,lowCpu=(navigator.hardwareConcurrency||8)<=4,reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+    pf=(lowMem||lowCpu||reduced)?"low":"high";
+  }
+  setTheme(th,false);setPerf(pf,false);
+})();
+$("#themeTog")?.addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="light"?"dark":"light"));
+$("#perfTog")?.addEventListener("click",()=>setPerf(document.documentElement.dataset.perf==="low"?"high":"low"));
 </script>
 </body>
 </html>
