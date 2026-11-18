@@ -529,7 +529,13 @@ body{padding-bottom:env(safe-area-inset-bottom,0)}
   <input class="sf2" id="prq" placeholder="Search actors" aria-label="Search actors" autocomplete="off">
   <div class="ag" id="pag"></div>
   <p class="gmsg" id="pmsg" role="alert" style="margin-bottom:10px"></p>
-  <div class="row"><a class="btn sm g" href="#/roulette">Mood Roulette</a><a class="btn sm g" href="#/dna">My Movie DNA</a><a class="btn sm g" id="pradd" href="#/add">Add a movie</a><a class="btn sm" id="pradmin" href="#/admin" hidden>Open admin panel</a><button class="btn sm g" id="prrm" type="button">Remove picture</button><button class="btn sm g" id="prx" type="button">Close</button></div>
+  <p class="muted" id="pagemsg" style="margin:4px 0 2px;font-size:13px"></p>
+  <div class="row"><a class="btn sm g" href="#/roulette">Mood Roulette</a><a class="btn sm g" href="#/dna">My Movie DNA</a><a class="btn sm g" id="pradd" href="#/add">Add a movie</a><a class="btn sm" id="pradmin" href="#/admin" hidden>Open admin panel</a><button class="btn sm g" id="prage" type="button">Content setting</button><button class="btn sm g" id="prrm" type="button">Remove picture</button><button class="btn sm g" id="prx" type="button">Close</button></div>
+</div></div>
+<div class="ov" id="ovage"><div class="md" role="dialog" aria-modal="true" aria-labelledby="at">
+  <h3 id="at">Before you dive in…</h3>
+  <p>To tailor what gets recommended, are you 18 or older? You can change this anytime from your profile.</p>
+  <div class="row"><button class="btn sm" id="age18" type="button">I'm 18 or older</button><button class="btn sm g" id="ageu18" type="button">I'm under 18</button></div>
 </div></div>
 <div class="gate" id="gate"><div class="gc">
   <div class="mwrap" id="gmasc"></div>
@@ -695,6 +701,8 @@ const IMG="https://image.tmdb.org/t/p/",img=(p,s)=>p?IMG+s+p:null;
 const CACHE=new Map(),DET=new Map();
 async function tm(path,p={}){
   const u=new URL("https://api.themoviedb.org/3"+path);u.searchParams.set("language","en-US");
+  // under-18 viewers (or anyone who hasn't confirmed their age yet) only get PG-13-and-under picks; TMDB applies this on /discover, and harmlessly ignores it elsewhere
+  if(me&&me.isAdult!==true){u.searchParams.set("certification_country","US");u.searchParams.set("certification.lte","PG-13");u.searchParams.set("include_adult","false")}
   for(const k in p)u.searchParams.set(k,p[k]);
   const h={};if(S.key.startsWith("eyJ"))h.Authorization="Bearer "+S.key;else u.searchParams.set("api_key",S.key);
   const r=await fetch(u,{headers:h});if(!r.ok)throw new Error(String(r.status));return r.json();
@@ -722,7 +730,7 @@ async function details(id){
   const m=await safe(async()=>nd(await tm("/movie/"+id,{append_to_response:"credits,videos,watch/providers",include_video_language:"en,null,hi,ta,te,ml,ko,ja,fr,es,it,de,zh"})),async()=>{const d=DEMO.find(x=>x.id===id);if(!d)throw new Error("nf");return d});
   DET.set(id,m);reg([m]);return m;
 }
-const complete=m=>m.demo||(m.poster&&m.overview&&m.overview!=="No synopsis available yet.");
+const complete=m=>m.demo||!!m.poster;
 const withPoster=l=>l.filter(complete);
 const dayPick=a=>a[Math.floor(Date.now()/864e5)%a.length];
 const getTrending=()=>safe(async()=>withPoster(reg((await tm("/trending/movie/week")).results.map(nl))),async()=>reg(DEMO.filter(m=>TREND.has(m.title))));
@@ -1489,8 +1497,18 @@ function paintMe(){
   $("#prh").innerHTML=`<div class="pr-av" id="prav">${avHtml(me.avatar,n)}</div><div><h3>${esc(n)}</h3><p class="muted" style="font-size:13px">${me.avatar?esc(me.avatar.name):"No picture chosen yet"}</p></div>`;
   $("#prrm").hidden=!me.avatar;$("#pradmin").hidden=!me.isAdmin;
   try{if(me.avatar)localStorage.setItem("mr_avatar:"+me.userId,JSON.stringify(me.avatar));else localStorage.removeItem("mr_avatar:"+me.userId)}catch(e){}
+  $("#pagemsg").textContent=me.isAdult===true?"Content setting: showing all movies.":"Content setting: showing movies rated PG-13 and under.";
   renderActors($("#prq").value);
 }
+const ovage=$("#ovage");
+function openAgeGate(){ovage.classList.add("on")}
+function setAdult(v){
+  if(!me)return;me.isAdult=v;try{localStorage.setItem("mr_adult:"+me.userId,v?"1":"0")}catch(e){}
+  ovage.classList.remove("on");paintMe();RT++;route();
+}
+$("#age18").addEventListener("click",()=>setAdult(true));
+$("#ageu18").addEventListener("click",()=>setAdult(false));
+$("#prage").addEventListener("click",openAgeGate);
 function openProfile(){
   $("#pmsg").textContent="";$("#prq").value="";paintMe();ov3.classList.add("on");
   if(!ACT||ACT.some(a=>a.pending))loadActors();else renderActors();
@@ -1530,11 +1548,13 @@ const shown=u=>String(u).split("@")[0];
 function gmsg(t,k){const e=$("#gmsg");e.textContent=t;e.className="gmsg "+(k||"")}
 function startApp(s){
   me=s;loadWL(s.userId);
-  me.avatar=null;me.isAdmin=false;
+  me.avatar=null;me.isAdmin=false;me.isAdult=undefined;
   try{const c=JSON.parse(localStorage.getItem("mr_avatar:"+s.userId)||"null");if(avUrl(c))me.avatar=c}catch(e){}
+  try{const v=localStorage.getItem("mr_adult:"+s.userId);if(v!=null)me.isAdult=v==="1"}catch(e){}
   paintMe();
   document.body.classList.remove("locked");
   saveWL();syncDemo();route();pullSaves();loadCommunity();
+  if(me.isAdult===undefined)openAgeGate();
 }
 function showGate(msg){
   me=null;RT++;WL=[];UID="";COMM=[];commP=null;setPend(0);closeProfile();app.innerHTML="";currentPage="";document.title="Sign in · Moodreel";
