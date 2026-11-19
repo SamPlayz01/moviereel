@@ -197,7 +197,7 @@ footer p{max-width:620px}
 .md input:focus{outline:0;border-color:var(--r)}
 .md a{color:var(--r2)}
 .fade{animation:up .5s var(--ease) both}
-/* UniClvrPass sign-in */
+/* Vault V sign-in */
 body.locked nav,body.locked main,body.locked footer,body.locked .demo{display:none!important}
 .gate{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;overflow:auto;background:var(--bg)}
 body.locked .gate{display:flex}
@@ -492,6 +492,170 @@ body{padding-bottom:env(safe-area-inset-bottom,0)}
 @media(hover:none){.mc:hover,.card:hover .pw{transform:none}.mc:active{transform:scale(.97)}.card:active .pw{transform:scale(.97)}.wl:hover{transform:none}.wl:active{transform:scale(.92)}.btn:hover{transform:none}.btn:active{transform:scale(.96)}}
 @supports(padding:max(0px)){.wrap{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}}
 #perfTog,#themeTog{font-size:16px}
+
+/* ================= Theater Mode: a private 2-minute screening in a real-feeling cinema room ================= */
+.ov.theater{padding:0;background:#02040c;overflow:hidden;backdrop-filter:none;-webkit-backdrop-filter:none;z-index:9500;display:none;opacity:1;transition:opacity .35s}
+.ov.theater.on{display:block}.ov.theater:focus{outline:0}
+.ov.theater.out{opacity:0}
+.tcam{position:absolute;left:0;top:0;width:1000px;height:720px;transform-origin:0 0;transition:transform 3.6s cubic-bezier(.65,0,.2,1);will-change:transform}
+.tcam.now{transition:none}
+.troom{position:absolute;left:-300px;top:-250px;width:1600px;height:1200px;overflow:visible;display:block}
+.tl{animation:ttw 3.4s ease-in-out infinite}
+@keyframes ttw{50%{opacity:.4}}
+.tdim{position:absolute;left:-300px;top:-250px;width:1600px;height:1200px;background:#01030b;opacity:0;transition:opacity 2.8s ease;pointer-events:none}
+.ov.theater.dim .tdim{opacity:.66}
+.tspill{position:absolute;left:140px;top:430px;width:720px;height:440px;background:radial-gradient(ellipse at 50% 0,rgba(196,220,255,.5),transparent 68%);mix-blend-mode:screen;opacity:0;transition:opacity 2.8s;pointer-events:none}
+.ov.theater.dim .tspill{opacity:1;animation:tflick 3.1s ease-in-out infinite}
+@keyframes tflick{0%,100%{opacity:1}50%{opacity:.78}}
+/* the screen */
+.tscr{position:absolute;left:258px;top:172px;width:484px;height:295px;background:#fff;overflow:hidden;border-radius:8px;box-shadow:0 0 50px 14px rgba(205,226,255,.55),0 0 200px 70px rgba(110,160,255,.28);color:#fff}
+.tbg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 35%,#3a0c1c,#0a0710 70%) center/cover no-repeat;opacity:0;transition:opacity 1.4s;filter:brightness(.62) saturate(1.2);animation:tkb 40s linear infinite alternate;z-index:1}
+@keyframes tkb{from{transform:scale(1.04)}to{transform:scale(1.2) translate(-2%,-1%)}}
+.tshade{position:absolute;inset:0;z-index:2;opacity:0;transition:opacity 1.4s;background:linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.42) 58%,rgba(0,0,0,.66)),radial-gradient(ellipse at center,transparent 38%,rgba(0,0,0,.6))}
+.ov.theater:not([data-stage="0"]) .tbg,.ov.theater:not([data-stage="0"]) .tshade{opacity:1}
+.tleader{position:absolute;inset:0;z-index:3;background:#f2f2ee;display:grid;place-items:center;transition:opacity .9s;overflow:hidden;color:#16161c}
+.tleader:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,transparent 0 30%,#222 30% 30.6%,transparent 30.6% 41%,#222 41% 41.5%,transparent 41.5%),linear-gradient(#222,#222) 50% 50%/1px 100% no-repeat,linear-gradient(#222,#222) 50% 50%/100% 1px no-repeat;opacity:.55}
+.tleader i{position:absolute;left:50%;top:50%;width:50%;height:100%;margin-top:-50%;transform-origin:0 50%;background:conic-gradient(from 0deg at 0 50%,rgba(0,0,0,.2),transparent 40deg);animation:tsw 1s linear infinite}
+@keyframes tsw{to{transform:rotate(360deg)}}
+.tleader b{position:relative;font:800 130px/1 "Iowan Old Style",Georgia,serif}
+.tleader b.pop{animation:tcnt .9s var(--ease) both}
+@keyframes tcnt{0%{transform:scale(1.7);opacity:0}25%{transform:scale(1);opacity:1}85%{opacity:1}100%{transform:scale(.85);opacity:0}}
+.ov.theater:not([data-stage="0"]) .tleader{opacity:0;pointer-events:none}
+.tflick{position:absolute;inset:0;z-index:5;pointer-events:none;background:rgba(255,255,255,.05);mix-blend-mode:overlay;animation:tfl .16s steps(2) infinite}
+@keyframes tfl{50%{opacity:.2}}
+.tflash{position:absolute;inset:0;z-index:5;background:#fff;opacity:0;pointer-events:none}
+.tflash.go{animation:tfs .6s ease-out}
+@keyframes tfs{0%{opacity:.85}100%{opacity:0}}
+.tcurt{position:absolute;top:0;bottom:0;width:51%;z-index:6;background:repeating-linear-gradient(90deg,rgba(0,0,0,.3) 0 8px,transparent 8px 36px),linear-gradient(90deg,#3a0610,#951325 50%,#4d0914);box-shadow:inset 0 -40px 50px rgba(0,0,0,.5);transition:transform 1.8s cubic-bezier(.76,0,.24,1)}
+.tcurt.l{left:0}.tcurt.r{right:0}
+.ov.theater.open .tcurt.l{transform:translateX(-103%)}
+.ov.theater.open .tcurt.r{transform:translateX(103%)}
+/* what plays on the screen (laid out at real pixel size, then scaled with the camera) */
+.tin{position:absolute;left:0;top:0;width:calc(484px*var(--kc,1));height:calc(295px*var(--kc,1));transform:scale(calc(1/var(--kc,1)));transform-origin:0 0;z-index:4;font-size:var(--fs,14px);display:flex;align-items:center;justify-content:center;text-align:center;padding:3.5% 5.5%}
+.tstg{display:none;width:100%;max-height:100%;min-height:0}
+.ov.theater[data-stage="1"] .t1,.ov.theater[data-stage="3"] .t3,.ov.theater[data-stage="4"] .t4,.ov.theater[data-stage="5"] .t5{display:block;animation:tReveal .9s var(--ease) both}
+.ov.theater[data-stage="2"] .t2{display:flex;flex-direction:column;justify-content:center;height:100%;animation:tReveal .9s var(--ease) both}
+@keyframes tReveal{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
+.tstg .eyebrow{color:#ffb3ba;font-size:.72em}
+.tstg h2{font-size:2.7em;margin:.12em 0 .22em;font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif;line-height:1.05;text-shadow:0 .08em .5em rgba(0,0,0,.7)}
+.tstg h3{font-size:.72em;text-transform:uppercase;letter-spacing:.2em;color:#ff8690;margin-bottom:.9em;flex:none}
+#ttag{font-style:italic;color:#ece2e2;font-size:1.05em}
+.tmeta{display:flex;gap:.4em 1.1em;justify-content:center;flex-wrap:wrap;margin-top:1em;font-size:.85em;color:#dcd2d2}
+.tmeta span+span:before{content:"·";margin-right:1.1em;opacity:.6}
+#tsyn{position:relative;flex:0 1 auto;min-height:0;overflow:hidden;font-size:1.12em;line-height:1.6;scroll-behavior:smooth;-webkit-mask-image:linear-gradient(transparent,#000 10%,#000 88%,transparent);mask-image:linear-gradient(transparent,#000 10%,#000 88%,transparent);padding:.4em 0}
+#tsyn .w{opacity:.26;transition:opacity .6s,color .6s}
+#tsyn .w.lit{opacity:1}
+.tcastrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1em .6em;width:100%}
+.tcast{opacity:0;transform:translateY(16px) scale(.6);transition:opacity .5s,transform .7s var(--bounce);min-width:0}
+.tcast.on{opacity:1;transform:none}
+.tcast .ph{width:3.9em;height:3.9em;border-radius:50%;overflow:hidden;margin:0 auto .4em;background:#1a1220;display:grid;place-items:center;font-weight:800;color:#fff;border:.14em solid rgba(255,255,255,.2);transition:border-color .4s,box-shadow .4s}
+.tcast.cur .ph{border-color:#fff;box-shadow:0 0 0 .16em rgba(255,255,255,.3),0 0 1.4em rgba(255,255,255,.55)}
+.tcast img{width:100%;height:100%;object-fit:cover}
+.tcast b{display:block;font-size:.74em;line-height:1.15}.tcast small{display:block;color:#cdbcbc;font-size:.62em;line-height:1.15;margin-top:.15em}
+.toutrow{display:flex;gap:.8em;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.t4{overflow:auto;max-height:100%;scrollbar-width:none}.t4::-webkit-scrollbar{display:none}
+.tstg .wbox{font-size:.8em;text-align:left;width:100%;background:rgba(0,0,0,.45);border-color:rgba(255,255,255,.2);color:#f1e9e9}
+.tstg .wbox b{color:#fff}.tstg .wnone{font-size:.8em;color:#d9cece;margin:0}
+.tstg .btn{font-size:.9em;height:auto;min-height:2.6em;padding:.4em 1.3em}
+.tend h2{font-size:3.6em}.tend p{color:#e8dede;margin-bottom:1em}
+/* chrome around the room */
+.tvig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 42%,transparent 55%,rgba(0,0,0,.65))}
+.tbadge{position:absolute;left:16px;top:max(18px,env(safe-area-inset-top,0px));z-index:30;display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:99px;background:rgba(6,10,24,.7);backdrop-filter:blur(10px);border:1px solid rgba(140,180,255,.25);color:#dfe8ff;font-size:12.5px;font-weight:600}
+.tbadge i{width:8px;height:8px;border-radius:50%;background:#e0293a;box-shadow:0 0 10px #e0293a;animation:glowdot 1.4s infinite}
+@keyframes glowdot{50%{opacity:.3}}
+.texit{position:absolute;top:max(14px,env(safe-area-inset-top,0px));right:16px;z-index:30}
+.tctl{position:absolute;left:50%;bottom:max(14px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;width:min(720px,calc(100% - 24px));display:grid;gap:8px;padding:10px 14px;border-radius:18px;background:rgba(6,10,24,.74);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(140,180,255,.25);color:#e6ecff}
+.tbar{display:flex;align-items:center;gap:12px}
+.tplay{width:38px;height:38px;border-radius:50%;background:#2f6bff;display:grid;place-items:center;flex:none;font-size:18px;color:#fff;box-shadow:0 4px 0 #14307f;transition:transform .2s var(--bounce)}
+.tplay:hover{transform:scale(1.1)}.tplay:active{transform:translateY(3px);box-shadow:none}
+.tclock{font-variant-numeric:tabular-nums;font-size:13px;white-space:nowrap}
+#tseek{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:6px;border-radius:9px;background:linear-gradient(90deg,#4f86ff var(--prog,0%),rgba(255,255,255,.2) var(--prog,0%));outline:0;cursor:pointer}
+#tseek::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #4f86ff;box-shadow:0 0 10px rgba(79,134,255,.9)}
+#tseek::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #4f86ff}
+.tdots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.tdots button{padding:4px 13px;border-radius:99px;border:1px solid rgba(255,255,255,.2);font-size:12px;color:#b9c6ee;transition:background .2s,color .2s}
+.tdots button:hover{color:#fff;border-color:#fff}
+.ov.theater[data-stage="1"] .tdots [data-s="1"],.ov.theater[data-stage="2"] .tdots [data-s="2"],.ov.theater[data-stage="3"] .tdots [data-s="3"],.ov.theater[data-stage="4"] .tdots [data-s="4"]{background:#2f6bff;border-color:#2f6bff;color:#fff}
+[data-perf="low"] .tspill,[data-perf="low"] .tflick{display:none}
+[data-perf="low"] .tcam{transition-duration:.9s}
+[data-perf="low"] .tbg{animation:none}
+@media(max-width:640px){.tbadge{display:none}.tclock{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.tcam{transition:none}.tcurt{transition-duration:.01s}}
+
+/* ================= Welcome / landing page ================= */
+body.welcome .gate{display:none!important}
+#welcome{display:none}
+body.welcome #welcome{display:block;position:fixed;inset:0;z-index:150;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);color:var(--t)}
+.wsec{padding:min(16vh,120px) 20px 10vh;max-width:920px;margin:0 auto;text-align:center}
+.wsec.full{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:0;padding-bottom:0}
+.wreveal{opacity:0;transform:translateY(34px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.wreveal.in{opacity:1;transform:none}
+[data-perf="low"] .wreveal{transition:opacity .3s}
+@media(prefers-reduced-motion:reduce){.wreveal{opacity:1!important;transform:none!important}}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:30px;text-align:left}
+.wcard{background:var(--p2);border:1px solid var(--l);border-radius:18px;padding:20px}
+.wcard .i{width:26px;height:26px;color:var(--r2);margin-bottom:10px}
+.wcard h4{margin-bottom:6px}
+.wcard p{color:var(--m);font-size:14px}
+.wfilms{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0}
+.wfilms span{background:var(--p2);border:1px solid var(--l);border-radius:999px;padding:8px 16px;font-weight:700;font-size:14px}
+.wscroll{margin-top:40px;animation:wbounce 1.8s infinite;color:var(--m);font-size:13px}
+@keyframes wbounce{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+.wcta{padding:12vh 20px 10vh;display:flex;flex-direction:column;align-items:center;gap:18px}
+.wtools{display:flex;gap:10px;align-items:center}
+#wskip{position:fixed;top:max(14px,env(safe-area-inset-top,0px));right:16px;z-index:5;font-size:13px}
+
+/* ================= scroll animations + extra spice ================= */
+.rv{opacity:0}
+#sprog{position:fixed;left:0;top:0;right:0;height:3px;z-index:9400;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,#7d0a15,#e0293a 60%,#ffd15a);box-shadow:0 0 14px rgba(224,41,58,.8);pointer-events:none}
+nav{transition:background .3s,border-color .3s,transform .45s var(--ease)}
+nav.h{transform:translateY(-112%)}
+.mg .mc,.grid .cw,.rail .cw,.dc{animation:none}
+/* every mood gets its own colour, plus a spotlight that follows the cursor */
+.mc{--h:350}
+.mc:before{background:radial-gradient(closest-side,hsl(var(--h) 85% 45%/.55),transparent)}
+.mc:hover{border-color:hsl(var(--h) 85% 55%/.6);box-shadow:0 22px 54px -20px hsl(var(--h) 85% 50%/.7)}
+.mc .mi{color:hsl(var(--h) 88% 64%);background:hsl(var(--h) 85% 50%/.14);border-color:hsl(var(--h) 85% 55%/.32)}
+.mc:hover .mi{background:hsl(var(--h) 80% 46%);color:#fff}
+.mc:after,.fx:after,.pc:after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(240px circle at var(--mx,50%) var(--my,0%),rgba(255,255,255,.14),transparent 62%);opacity:0;transition:opacity .3s;pointer-events:none}
+.mc:hover:after,.fx:hover:after,.pc:hover:after{opacity:1}
+.pc{position:relative;overflow:hidden}
+@media(hover:hover) and (pointer:fine){
+  .card:hover .pw,.cw:nth-child(even) .card:hover .pw{transform:perspective(800px) translateY(-8px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) scale(1.06);transition:transform .16s ease-out,border-color .3s,box-shadow .35s,filter .5s}
+}
+/* "tonight I'm feeling ..." line */
+.vibe{font-size:clamp(17px,2.4vw,26px);margin:-4px 0 18px;color:var(--m);font-weight:500}
+.vibe a,.vibe b{display:inline-block;font-weight:800;color:hsl(var(--vh,350) 90% 64%);border-bottom:3px solid currentColor;line-height:1.1;animation:vibein .55s var(--bounce) both;text-shadow:0 0 28px hsl(var(--vh,350) 90% 50%/.55)}
+@keyframes vibein{from{opacity:0;transform:translateY(.6em) rotate(-4deg) scale(.8)}to{opacity:1;transform:none}}
+.confetti{position:fixed;inset:0;z-index:9300;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;border-radius:2px}
+/* welcome page: scroll story */
+#welcome{overflow-x:hidden}
+.wsec.full{position:relative}
+.wdeco{inset:0 auto 0 50%;width:100vw;margin-left:-50vw;display:block;opacity:.9}
+.wdeco .stk{opacity:.85}
+@media(max-width:720px){.wdeco .stk{transform-origin:center;scale:.6;opacity:.22}}
+.wtxt{position:relative;z-index:1;will-change:transform,opacity}
+.wtick{width:100vw;margin-top:46px;position:relative;z-index:1}
+.wgrid .wcard.wreveal:nth-child(odd){transform:translate(-64px,36px) rotate(-4deg)}
+.wgrid .wcard.wreveal:nth-child(even){transform:translate(64px,36px) rotate(4deg)}
+.wgrid .wcard.wreveal.in{transform:none}
+.wgrid .wcard:nth-child(2){transition-delay:.1s}.wgrid .wcard:nth-child(3){transition-delay:.2s}.wgrid .wcard:nth-child(4){transition-delay:.3s}
+.wcard{transition:opacity .8s var(--ease),transform .8s var(--ease),border-color .3s,box-shadow .3s}
+.wcard:hover{border-color:var(--r2);box-shadow:0 18px 40px -20px rgba(224,41,58,.6)}
+.wstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;margin-top:34px}
+.wstats div{padding:24px 10px;border-radius:22px;background:linear-gradient(180deg,var(--p2),var(--p));border:1px solid var(--l);box-shadow:0 5px 0 var(--dk)}
+.wstats b{display:block;font-size:clamp(44px,8vw,68px);letter-spacing:-.05em;line-height:1;color:var(--r2);font-variant-numeric:tabular-nums}
+.wstats span{display:block;margin-top:8px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--m)}
+.wroom{position:relative;aspect-ratio:1000/720;border-radius:26px;overflow:hidden;border:1px solid var(--l2);box-shadow:0 40px 90px -30px rgba(0,0,0,.9),0 0 90px -30px rgba(47,107,255,.55);max-width:880px;margin:34px auto 6px;background:#02040d}
+.wroom-in{position:absolute;inset:0;transform-origin:50% 44.4%;will-change:transform}
+.wroom-in svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.wroom-scr{position:absolute;left:25.8%;top:23.9%;width:48.4%;height:41%;border-radius:.6%;background:#fff;color:#12121a;display:grid;place-content:center;text-align:center;box-shadow:0 0 50px 14px rgba(205,226,255,.55),0 0 160px 50px rgba(110,160,255,.3);animation:wflick 3s ease-in-out infinite}
+.wroom-scr span{font-size:clamp(8px,1.3vw,13px);letter-spacing:.3em;font-weight:700;color:#a50e1c}
+.wroom-scr b{font:800 clamp(18px,4.2vw,44px)/1.05 "Iowan Old Style",Georgia,serif;font-style:italic;margin:.1em 0}
+.wroom-scr small{font-size:clamp(9px,1.4vw,14px);color:#555}
+@keyframes wflick{50%{filter:brightness(.93)}}
+.wroom-badge{display:inline-block;margin-top:8px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--m)}
 </style>
 </head>
 <body class="locked">
@@ -532,11 +696,80 @@ body{padding-bottom:env(safe-area-inset-bottom,0)}
   <p class="muted" id="pagemsg" style="margin:4px 0 2px;font-size:13px"></p>
   <div class="row"><a class="btn sm g" href="#/roulette">Mood Roulette</a><a class="btn sm g" href="#/dna">My Movie DNA</a><a class="btn sm g" id="pradd" href="#/add">Add a movie</a><a class="btn sm" id="pradmin" href="#/admin" hidden>Open admin panel</a><button class="btn sm g" id="prage" type="button">Content setting</button><button class="btn sm g" id="prrm" type="button">Remove picture</button><button class="btn sm g" id="prx" type="button">Close</button></div>
 </div></div>
+<div class="ov theater" id="ovtheater" tabindex="-1" role="dialog" aria-modal="true" aria-label="Theater mode: a 2-minute private screening" data-stage="0">
+  <div class="tcam" id="tcam">
+    <svg class="troom" id="troom" viewBox="-300 -250 1600 1200" aria-hidden="true"></svg>
+    <div class="tdim" aria-hidden="true"></div><div class="tspill" aria-hidden="true"></div>
+    <div class="tscr" id="tscr">
+      <div class="tbg" id="tbg"></div><div class="tshade"></div>
+      <div class="tleader" aria-hidden="true"><i></i><b id="tcount"></b></div>
+      <div class="tin" id="tin">
+        <div class="tstg t1"><span class="eyebrow">Now showing · a 2-minute screening</span><h2 id="ttitle"></h2><p id="ttag"></p><div class="tmeta" id="tmeta"></div></div>
+        <div class="tstg t2"><h3>The story</h3><p id="tsyn"></p></div>
+        <div class="tstg t3"><h3>Starring</h3><div class="tcastrow" id="tcastrow"></div></div>
+        <div class="tstg t4"><h3>Catch it after the show</h3><div class="toutrow" id="toutrow"></div></div>
+        <div class="tstg t5 tend"><span class="eyebrow">Thanks for watching</span><h2>The End</h2><p>Lights up. Time to pick your next movie.</p><div class="toutrow"><button class="btn" id="treplay" type="button">Replay</button><a class="btn g" id="tendtr" href="#" target="_blank" rel="noopener noreferrer">Watch trailer</a><button class="btn g" id="tendx" type="button">Leave theater</button></div></div>
+      </div>
+      <div class="tflick"></div><div class="tflash" id="tflash"></div>
+      <div class="tcurt l"></div><div class="tcurt r"></div>
+    </div>
+  </div>
+  <div class="tvig" aria-hidden="true"></div>
+  <span class="tbadge"><i></i>Private screening · 2:00</span>
+  <button class="btn g texit" id="texit" type="button">Exit theater</button>
+  <div class="tctl">
+    <div class="tbar"><button class="tplay" id="tplay" type="button" aria-label="Pause"></button><input id="tseek" type="range" min="0" max="120" step="0.1" value="0" aria-label="Screening position"><span class="tclock" id="tclock">0:00 / 2:00</span></div>
+    <div class="tdots" id="tdots" aria-label="Jump to a part of the screening"><button data-s="1" type="button">Title</button><button data-s="2" type="button">Story</button><button data-s="3" type="button">Cast</button><button data-s="4" type="button">Where to watch</button></div>
+  </div>
+</div>
 <div class="ov" id="ovage"><div class="md" role="dialog" aria-modal="true" aria-labelledby="at">
   <h3 id="at">Before you dive in…</h3>
   <p>To tailor what gets recommended, are you 18 or older? You can change this anytime from your profile.</p>
   <div class="row"><button class="btn sm" id="age18" type="button">I'm 18 or older</button><button class="btn sm g" id="ageu18" type="button">I'm under 18</button></div>
 </div></div>
+<div id="welcome">
+  <button class="ib" id="wskip" type="button">Skip to login</button>
+  <section class="wsec full wreveal in" id="whero">
+    <div class="deco wdeco" id="wdeco" aria-hidden="true"></div>
+    <div class="wtxt" id="wtxt">
+      <div class="logo" style="justify-content:center;font-size:28px"><b><svg viewBox="0 0 24 24"><path d="m6 3 14 9-14 9z"/></svg></b>Moodreel</div>
+      <h1 class="rh" style="margin-top:14px">Every mood <span class="serif">has a movie</span></h1>
+      <p class="vibe">Tonight I'm feeling <b id="wvibe">happy</b></p>
+      <p class="muted" style="max-width:520px;margin:12px auto 0">Mood-based picks, a roulette that decides for you, your own Movie DNA, and a private 2-minute screening in a real-feeling cinema room.</p>
+      <div class="wscroll">Scroll to see how it works ↓</div>
+    </div>
+    <div class="tick wtick" aria-hidden="true"><div id="wtick"></div></div>
+  </section>
+  <section class="wsec">
+    <h2 class="rh">How it <span class="serif">works</span></h2>
+    <div class="wgrid">
+      <div class="wcard wreveal"><span class="i" id="wi1"></span><h4>Mood Matcher</h4><p>Tell us how you feel and filter by genre, language, runtime and rating. No AI guessing, just real filters.</p></div>
+      <div class="wcard wreveal"><span class="i" id="wi2"></span><h4>Mood Roulette</h4><p>Lock a reel you like (mood, era or language) and spin the rest for a surprise pick.</p></div>
+      <div class="wcard wreveal"><span class="i" id="wi3"></span><h4>My Movie DNA</h4><p>Save a few movies and we turn your taste into a shareable profile: genres, decades, your personality type.</p></div>
+      <div class="wcard wreveal"><span class="i" id="wi4"></span><h4>Theater Mode</h4><p>Curtains open, lights dim, and you get a 2-minute private screening: title, story, cast and where to watch.</p></div>
+    </div>
+    <div class="wstats wreveal"><div><b data-count="10">0</b><span>moods</span></div><div><b data-count="3">0</b><span>roulette reels</span></div><div><b data-count="120">0</b><span>seconds of theater</span></div></div>
+  </section>
+  <section class="wsec">
+    <h2 class="rh">Step inside the <span class="serif">theater</span></h2>
+    <p class="muted" style="max-width:580px;margin:10px auto 0">Open any movie's page and tap <b>Enter Theater</b>. The room is yours for exactly two minutes. It works on every title, and these are ready right now:</p>
+    <div class="wroom wreveal" id="wroom"><div class="wroom-in" id="wroomin"><svg id="wroomsvg" viewBox="0 0 1000 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg><div class="wroom-scr"><span>NOW SHOWING</span><b>Your movie</b><small>2:00 private screening</small></div></div></div>
+    <span class="wroom-badge">Keep scrolling to walk toward the screen</span>
+    <div class="wfilms wreveal">
+      <span>Scene</span><span>Jailer</span><span>Jailer 2</span><span>Raja The Great</span><span>Irumudi</span><span>Kantara</span><span>Kantara 2</span>
+    </div>
+    <button class="btn wreveal" id="wsample" type="button"><span class="i" id="wisamp"></span> Preview the theater, no login needed</button>
+  </section>
+  <section class="wsec wcta wreveal">
+    <h2 class="rh">Ready when <span class="serif">you are</span></h2>
+    <p class="muted">Pick your look before you dive in. You can always change these later.</p>
+    <div class="wtools">
+      <button class="ib" id="wthemeTog" type="button" title="Toggle light / dark">🌙</button>
+      <button class="ib" id="wperfTog" type="button" title="Toggle animation quality">⚡</button>
+    </div>
+    <button class="btn" id="wlogin" type="button" style="font-size:17px;padding:14px 32px">Log in / Create account</button>
+  </section>
+</div>
 <div class="gate" id="gate"><div class="gc">
   <div class="mwrap" id="gmasc"></div>
   <div class="logo"><b><svg viewBox="0 0 24 24"><path d="m6 3 14 9-14 9z"/></svg></b>Moodreel</div>
@@ -550,7 +783,7 @@ body{padding-bottom:env(safe-area-inset-bottom,0)}
       <button class="btn" id="gbtn" type="submit">Sign in</button>
     </div>
   </form>
-  <small>Powered by <b>UniClvrPass</b></small>
+  <small>Powered by <b>Vault V</b></small>
 </div></div>
 <div id="toast" role="status"></div>
 
@@ -773,23 +1006,24 @@ const search=(q,f,page)=>safe(async()=>{
   return{movies:reg(a.slice((page-1)*20,page*20)),more:page*20<a.length};
 });
 
-/* ---------- saved movies: stored per UniClvrPass account in your MoodFlix Supabase ---------- */
+/* ---------- saved movies: stored per Vault V account in your MoodFlix Supabase ---------- */
 const SB_PUB="https://vhofjestswkctewkvzvy.supabase.co";
 const SAVES_URL=SB_PUB+"/functions/v1/saves";
 const SC="mr_saved_v1:",OLD="mr_watchlist_v1";
 let WL=[],UID="";const busy=new Set();
 class SaveAuthError extends Error{}
-// Every call carries the person's UniClvrPass token; the function asks UniClvrPass to verify it (no password ever goes here).
+// Every call carries the person's Vault V token; the function asks Vault V to verify it (no password ever goes here).
 async function sv(body){
   let r;
-  try{r=await fetch(SAVES_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+(me?me.authToken:"")},body:JSON.stringify(body)})}
+  const tok=await freshToken();
+  try{r=await fetch(SAVES_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+tok},body:JSON.stringify(body)})}
   catch(e){const x=new Error("Couldn't reach the save service. Check your connection.");x.status=0;throw x}
   const d=await r.json().catch(()=>({}));
   if(r.status===401)throw new SaveAuthError(d.error||"Your session has expired. Please sign in again.");
   if(!r.ok||!d.success){const e=new Error(r.status===429?"Too many requests. Try again in a moment.":d.error||"Something went wrong.");e.status=r.status;throw e}
   return d;
 }
-// a token UniClvrPass no longer accepts (expired, logged out, account deleted): back to the sign-in screen
+// a token Vault V no longer accepts (expired, logged out, account deleted): back to the sign-in screen
 function expire(msg){clearSession();history.replaceState(null,"","#/");showGate(msg||"Your session has expired. Please sign in again.")}
 const okPoster=p=>typeof p==="string"&&p.length<=300&&(/^https:\/\/image\.tmdb\.org\/t\/p\/[\w\/.-]+$/.test(p)||p.startsWith(SB_PUB+"/storage/v1/object/public/posters/")&&/^[\w\/.-]+$/.test(p.slice(SB_PUB.length))&&!p.includes(".."));
 const tidy=l=>(Array.isArray(l)?l:[]).filter(m=>m&&/^[\w-]{1,32}$/.test(String(m.id))).map(m=>({...m,id:String(m.id),poster:okPoster(m.poster)?m.poster:null,genres:Array.isArray(m.genres)?m.genres:[],cast:[]}));
@@ -902,6 +1136,7 @@ function home(){
   setPage(`<div>
   <section class="hero"><div class="deco" aria-hidden="true">${stickers()}</div><div class="wrap"><div class="mwrap">${mascot("h")}</div><span class="eyebrow">Mood-first movie discovery</span>
     <h1>What are you in the <span class="serif">mood</span> for?</h1>
+    <p class="vibe">Tonight I'm feeling <a id="vibe" href="#/mood/happy">happy</a></p>
     <p class="lead">Skip the endless scrolling. Tell us how you feel and we'll find the film that fits.</p>
     <div class="row"><a class="btn" href="#/moods">${I("spark")} Choose your mood</a><button class="btn g" data-act="random">${I("shuf")} Random movie</button></div>
     <div class="tick" aria-hidden="true"><div>${tick}${tick}${tick}${tick}</div></div></div></section>
@@ -916,9 +1151,9 @@ function home(){
   loadCommunity().then(l=>{if(t!==RT)return;$("#cm").innerHTML=l.length?rail(l.slice(0,16)):'<p class="muted">Nothing here yet. Be the first to add a movie!</p>';syncWL()});
   getTrending().then(l=>{if(t!==RT)return;$("#tr").innerHTML=rail(l);syncWL()});
   getRecent().then(l=>{if(t!==RT)return;$("#rc").innerHTML=rail(l);syncWL()});
-  getFeatured().then(m=>{if(t!==RT)return;$("#feat").innerHTML=featured(m);syncWL()}).catch(()=>{if(t===RT)$("#feat").remove()});
+  startVibe();getFeatured().then(m=>{if(t!==RT)return;$("#feat").innerHTML=featured(m);syncWL()}).catch(()=>{if(t===RT)$("#feat").remove()});
 }
-const moodGrid=()=>`<div class="mg">${MOODS.map(m=>`<a class="mc" href="#/mood/${m.id}"><span class="mi">${I(m.ic)}</span><h3>${m.name}</h3><p>${m.blurb}</p></a>`).join("")}</div>`;
+const moodGrid=()=>`<div class="mg">${MOODS.map(m=>`<a class="mc" href="#/mood/${m.id}" style="--h:${MHUE[m.id]}"><span class="mi">${I(m.ic)}</span><h3>${m.name}</h3><p>${m.blurb}</p></a>`).join("")}</div>`;
 function featured(m){
   const bg=m.backdrop?`<img src="${m.backdrop.replace("/w1280/","/w780/")}" alt="" decoding="async" data-t="${esc(m.title)}" data-y="${m.year||""}" data-w="1" onerror="fb(this)">`:art(m,"wide");
   return`<div class="feat"><div class="bg">${bg}</div><div class="fi"><span class="eyebrow">Featured tonight</span><h2>${esc(m.title)}</h2>
@@ -957,10 +1192,208 @@ function watchBox(m){
   if(w.none||!(w.stream.length||w.rent.length||w.buy.length))return`<p class="muted wnone">Not listed on any streaming service in your region (${esc(w.region)}) yet.</p>`;
   return`<div class="wbox"><b>Where to watch <small>(${esc(w.region)})</small></b>${watchRow(w.stream,"Stream")}${watchRow(w.rent,"Rent")}${watchRow(w.buy,"Buy")}<small class="muted">Streaming data from JustWatch, via TMDB.${w.link?` <a href="${w.link}" target="_blank" rel="noopener noreferrer">See the full list</a>`:""}</small></div>`;
 }
+/* ---------- the cinema room (SVG): blue acoustic walls + ceiling, blue seats, aisle, big screen. Shared by Theater Mode and the welcome preview ---------- */
+function roomSVG(p,low){
+  const VX=500,VY=300,CY=-372,FY=357,SB=.51,SF=1.75,WX=500,zb=1/SB,zf=1/SF;
+  let seed=11;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
+  const f=n=>(+n).toFixed(1);
+  const P=a=>a.map(([x,y,s])=>f(500+x*s)+","+f(300+y*s)).join(" ");
+  const poly=(a,fill,st="")=>`<polygon points="${P(a)}" fill="${fill}"${st}/>`;
+  const items=[],add=(s,h)=>items.push([s,h]);
+  const N=low?14:26,dz=(zb-zf)/N;
+  let o=`<defs>
+<linearGradient id="${p}bw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#10286e"/><stop offset="1" stop-color="#050b28"/></linearGradient>
+<linearGradient id="${p}fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1c58"/><stop offset="1" stop-color="#030918"/></linearGradient>
+<linearGradient id="${p}st" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4b93ff"/><stop offset=".5" stop-color="#2358de"/><stop offset="1" stop-color="#0e2c8c"/></linearGradient>
+<radialGradient id="${p}wm"><stop offset="0" stop-color="#ffdc9a" stop-opacity="1"/><stop offset=".4" stop-color="#ffb347" stop-opacity=".45"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>
+<radialGradient id="${p}ls"><stop offset="0" stop-color="#fff" stop-opacity="1"/><stop offset=".3" stop-color="#a9ccff" stop-opacity=".55"/><stop offset="1" stop-color="#4a7dff" stop-opacity="0"/></radialGradient>
+<radialGradient id="${p}fg" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#cfe3ff" stop-opacity=".6"/><stop offset="1" stop-color="#cfe3ff" stop-opacity="0"/></radialGradient>
+</defs>`;
+  o+=`<rect x="-300" y="-250" width="1600" height="1200" fill="#02040d"/>`;
+  o+=poly([[-WX,CY,SB],[WX,CY,SB],[WX,FY,SB],[-WX,FY,SB]],`url(#${p}bw)`);
+  o+=poly([[-WX,CY,SB],[WX,CY,SB],[WX,CY,SF],[-WX,CY,SF]],"#071146");
+  o+=poly([[-WX,FY,SB],[WX,FY,SB],[WX,FY,SF],[-WX,FY,SF]],`url(#${p}fl)`);
+  o+=poly([[-WX,CY,SB],[-WX,FY,SB],[-WX,FY,SF],[-WX,CY,SF]],"#07123c");
+  o+=poly([[WX,CY,SB],[WX,FY,SB],[WX,FY,SF],[WX,CY,SF]],"#07123c");
+  /* patterned carpet between the screen and the first row */
+  const cp=low?20:46;
+  for(let i=0;i<cp;i++){
+    const x=-470+rnd()*900,w=40+rnd()*110,za=zb-.012-rnd()*.3,zb2=za-.025-rnd()*.05;
+    o+=poly([[x,FY,1/za],[x+w,FY,1/za],[x+w,FY,1/zb2],[x,FY,1/zb2]],`hsl(${196+rnd()*28} ${55+rnd()*30}% ${34+rnd()*26}%)`,` fill-opacity="${(.32+rnd()*.35).toFixed(2)}"`);
+  }
+  /* acoustic wall blocks: vertical bars of different heights and depths on both walls */
+  for(const sg of[-1,1])for(let i=0;i<N;i++){
+    const zf0=zb-i*dz,zn0=zb-(i+1)*dz,nb=low?3:4+Math.floor(rnd()*2);
+    for(let j=0;j<nb;j++){
+      const t0=rnd()*.45,t1=Math.min(1,t0+.4+rnd()*.5);
+      const sa=1/(zf0-(zf0-zn0)*t0),sb=1/(zf0-(zf0-zn0)*t1);
+      const ya=CY+rnd()*(FY-CY)*.62,yb=Math.min(FY+10,ya+70+rnd()*270);
+      const d=16+rnd()*58,xo=sg*WX,xi=sg*(WX-d),h=208+rnd()*20,sat=82+rnd()*14,l=14+rnd()*24;
+      const st=` stroke="rgba(2,6,30,.6)" stroke-width=".6"`;
+      let g=poly([[xi,ya,sa],[xi,ya,sb],[xi,yb,sb],[xi,yb,sa]],`hsl(${h} ${sat}% ${l+5}%)`,st);
+      g+=poly([[xo,ya,sb],[xi,ya,sb],[xi,yb,sb],[xo,yb,sb]],`hsl(${h} ${sat}% ${l+15}%)`,st);
+      add(sb,g);
+    }
+  }
+  /* warm wall lights */
+  for(let k=0;k<(low?4:8);k++){
+    const s=.56+rnd()*.9,sg=k%2?1:-1,x=sg*(WX-30),y=150+rnd()*110;
+    add(s,`<circle cx="${f(500+x*s)}" cy="${f(300+y*s)}" r="${f(30*s)}" fill="url(#${p}wm)"/>`);
+  }
+  /* ceiling grid of glowing blue beams */
+  const hb=44,lx=[-460,-345,-230,-115,0,115,230,345,460],bw=16;
+  for(const x of lx){
+    let g=poly([[x-bw,CY+hb,SB],[x+bw,CY+hb,SB],[x+bw,CY+hb,SF],[x-bw,CY+hb,SF]],"#2f6bff");
+    if(x>0)g+=poly([[x-bw,CY,SB],[x-bw,CY+hb,SB],[x-bw,CY+hb,SF],[x-bw,CY,SF]],"#1a44bd");
+    if(x<0)g+=poly([[x+bw,CY,SB],[x+bw,CY+hb,SB],[x+bw,CY+hb,SF],[x+bw,CY,SF]],"#1a44bd");
+    add(SB+.001,g);
+  }
+  const nt=low?8:15;
+  for(let i=0;i<nt;i++){
+    const z=zb-.04-i*((zb-zf-.1)/nt),sa=1/z,sb=1/(z-.035);
+    let g=poly([[-WX,CY+hb,sa],[WX,CY+hb,sa],[WX,CY+hb,sb],[-WX,CY+hb,sb]],"#3f82ff");
+    g+=poly([[-WX,CY,sb],[WX,CY,sb],[WX,CY+hb,sb],[-WX,CY+hb,sb]],"#1c4ed8");
+    g+=`<line x1="${f(500-WX*sb)}" y1="${f(300+(CY+hb)*sb)}" x2="${f(500+WX*sb)}" y2="${f(300+(CY+hb)*sb)}" stroke="#bcd7ff" stroke-width="${f(1.6*sb)}" opacity=".8"/>`;
+    add(sb,g);
+  }
+  /* ceiling spotlights */
+  let k0=0;
+  for(const x of[-290,-175,-58,58,175,290])for(let i=0;i<(low?3:6);i++){
+    const z=zb-.1-i*((zb-zf-.2)/6)-.02*(k0%2),s=1/z,y=CY+hb+2;k0++;
+    add(s,`<circle class="tl" style="animation-delay:${(k0*.37%3).toFixed(2)}s" cx="${f(500+x*s)}" cy="${f(300+y*s)}" r="${f(15*s)}" fill="url(#${p}ls)"/><circle cx="${f(500+x*s)}" cy="${f(300+y*s)}" r="${f(2.4*s)}" fill="#fff"/>`);
+  }
+  /* seats */
+  const rows=low?8:14,z0=1/.65,z1=zf+.03,dzr=(z0-z1)/(rows-1),sw=46,gap=7,sh=74;
+  for(let r=0;r<rows;r++){
+    const z=z0-r*dzr,s=1/z,yf=FY+120*(s-.66);let g="";
+    for(const sg of[-1,1])for(let k=0;k<7;k++){
+      const xa=sg>0?62+k*(sw+gap):-(62+k*(sw+gap))-sw;
+      g+=`<rect x="${f(500+xa*s)}" y="${f(300+(yf-sh)*s)}" width="${f(sw*s)}" height="${f(sh*s)}" rx="${f(11*s)}" fill="url(#${p}st)" stroke="#9cc6ff" stroke-opacity=".55" stroke-width="${f(1.3*s)}"/>`;
+    }
+    add(s,`<g opacity="${(.7+.3*r/rows).toFixed(2)}">${g}</g>`);
+  }
+  /* the person standing in the aisle, seen from behind */
+  {const s=.78,bx=500,by=300+FY*s;
+   add(s,`<g transform="translate(${bx} ${f(by)}) scale(${(s*.75).toFixed(3)})"><ellipse cx="0" cy="3" rx="34" ry="7" fill="#000" opacity=".5"/><rect x="-19" y="-80" width="15" height="80" rx="4" fill="#1a2034"/><rect x="4" y="-80" width="15" height="80" rx="4" fill="#1a2034"/><rect x="-21" y="-6" width="19" height="7" rx="3" fill="#0b0d16"/><rect x="2" y="-6" width="19" height="7" rx="3" fill="#0b0d16"/><path d="M-27 -82 L27 -82 L24 -140 Q0 -150 -24 -140 Z" fill="#2c3342"/><rect x="-37" y="-136" width="11" height="58" rx="5" fill="#2c3342"/><rect x="26" y="-136" width="11" height="58" rx="5" fill="#2c3342"/><rect x="-6" y="-152" width="12" height="14" rx="4" fill="#3a2f2a"/><circle cx="0" cy="-163" r="14" fill="#241c18"/><path d="M-24 -140 Q0 -150 24 -140" fill="none" stroke="#a9ceff" stroke-opacity=".6" stroke-width="2"/><circle cx="0" cy="-163" r="14" fill="none" stroke="#a9ceff" stroke-opacity=".45" stroke-width="1.5"/></g>`);}
+  items.sort((a,b)=>a[0]-b[0]);
+  o+=items.map(i=>i[1]).join("");
+  o+=`<ellipse cx="500" cy="${f(300+FY*.55)}" rx="360" ry="110" fill="url(#${p}fg)" opacity=".45"/>`;
+  return o;
+}
+/* ---------- Theater Mode: a private 2-minute screening in a cinema room ---------- */
+const SHOW=120,MARKS=[0,5,20,60,92,115];   // 0 countdown · 1 title · 2 story · 3 cast · 4 where to watch · 5 the end
+const IC_PAUSE='<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>',IC_REPLAY='<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>';
+let CURM=null,TH={t:0,run:false,iv:0,last:0,stage:-1,wi:0,ci:0,lead:-1,words:[],cast:[],pose:{},cur:"wide",low:null,drag:false};
+const fmt=s=>{s=Math.max(0,Math.floor(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
+const stageOf=t=>{let s=0;MARKS.forEach((m,i)=>{if(t>=m)s=i});return s};
+const still=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
+const perfLow=()=>document.documentElement.dataset.perf==="low";
+function theaterStage(m){
+  const bg=m.backdrop||m.poster||"";
+  $("#tbg").style.backgroundImage=bg?`url("${bg}")`:"";
+  $("#ttitle").textContent=m.title;$("#ttag").textContent=m.tagline||"";
+  const meta=[m.year,rtm(m.runtime),(m.genres||[]).slice(0,3).join(" · "),m.rating?"★ "+m.rating.toFixed(1):""].filter(Boolean);
+  $("#tmeta").innerHTML=meta.map(x=>`<span>${esc(x)}</span>`).join("");
+  const words=(m.overview||"No synopsis available yet.").split(/\s+/).filter(Boolean);
+  $("#tsyn").innerHTML=words.map(w=>`<span class="w">${esc(w)}</span>`).join(" ");$("#tsyn").scrollTop=0;
+  TH.words=$$("#tsyn .w");
+  const cast=(m.cast||[]).slice(0,10);
+  $("#tcastrow").innerHTML=cast.length?cast.map(c=>`<div class="tcast"><div class="ph">${c.photo?`<img src="${c.photo}" alt="" loading="lazy">`:esc(ini(c.name))}</div><b>${esc(c.name)}</b>${c.character?`<small>${esc(c.character)}</small>`:""}</div>`).join(""):'<p class="muted" style="grid-column:1/-1">Cast details coming soon for this one.</p>';
+  TH.cast=$$("#tcastrow .tcast");
+  $("#toutrow").innerHTML=`<a class="btn" href="${trailerUrl(m)}" target="_blank" rel="noopener noreferrer">Watch trailer</a>`+(watchBox(m)||"");
+  $("#tendtr").href=trailerUrl(m);
+}
+function buildRoom(){
+  const low=perfLow();if(TH.low===low)return;TH.low=low;
+  $("#troom").innerHTML=roomSVG("tr",low);
+}
+/* the camera: a wide shot of the room, then a dolly-in to the screen */
+function theaterLayout(){
+  const ov=$("#ovtheater"),vw=innerWidth,vh=innerHeight,port=vh>vw*1.05;
+  const kc=port?Math.min(.94*vw/484,.5*vh/295):Math.min(.8*vw/484,.62*vh/295);
+  const kw=port?kc*.78:Math.max(vw/1000,vh/720),cy=port?vh*.4:vh*.45;
+  ov.style.setProperty("--kc",kc.toFixed(4));
+  ov.style.setProperty("--fs",Math.max(11,Math.min(24,484*kc/(port?31:36))).toFixed(1)+"px");
+  TH.pose={wide:port?[vw/2-kw*500,cy-kw*319.5,kw]:[vw/2-kw*500,vh/2-kw*360,kw],close:[vw/2-kc*500,cy-kc*319.5,kc]};
+}
+function theaterPose(name,instant){
+  TH.cur=name;const[x,y,k]=TH.pose[name],cam=$("#tcam");
+  cam.classList.toggle("now",!!instant||still());
+  cam.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) scale(${k.toFixed(4)})`;
+}
+function paintPlay(){
+  const b=$("#tplay"),end=TH.t>=SHOW;
+  b.innerHTML=end?IC_REPLAY:TH.run?IC_PAUSE:I("play");b.setAttribute("aria-label",end?"Replay":TH.run?"Pause":"Play");
+  $("#treplay").textContent="Replay "+fmt(SHOW);
+}
+function update(force){
+  const ov=$("#ovtheater"),t=TH.t,st=stageOf(t);
+  if(force||st!==TH.stage){
+    const first=TH.stage<0;TH.stage=st;ov.dataset.stage=String(st);
+    theaterPose(st>=2&&st<5?"close":"wide",first);
+    if(!first&&!perfLow()){const f=$("#tflash");f.classList.remove("go");void f.offsetWidth;f.classList.add("go")}
+  }
+  ov.classList.toggle("open",t>=.4);
+  ov.classList.toggle("dim",t>=1.3&&t<MARKS[5]);
+  if(st===0){const n=t<1.6?0:t<2.6?3:t<3.6?2:t<4.6?1:0;if(n!==TH.lead){TH.lead=n;const b=$("#tcount");b.textContent=n||"";b.classList.remove("pop");void b.offsetWidth;if(n)b.classList.add("pop")}}
+  /* the story lights up word by word */
+  const N=TH.words.length,p=Math.max(0,Math.min(1,(t-MARKS[2]-1.5)/(MARKS[3]-MARKS[2]-6))),L=t<MARKS[2]?0:Math.round(p*N);
+  if(L!==TH.wi){for(let i=Math.min(TH.wi,L);i<Math.max(TH.wi,L);i++)TH.words[i].classList.toggle("lit",i<L);TH.wi=L}
+  if(st===2&&L>0){const w=TH.words[L-1],box=$("#tsyn");box.scrollTop=Math.max(0,w.offsetTop-box.clientHeight*.55)}
+  /* the cast takes a bow one by one */
+  const C=TH.cast.length,c=t<MARKS[3]?0:Math.min(C,Math.floor((t-MARKS[3])/Math.max(.5,(MARKS[4]-MARKS[3]-8)/Math.max(1,C)))+1);
+  if(c!==TH.ci||force){TH.cast.forEach((el,i)=>{el.classList.toggle("on",i<c);el.classList.toggle("cur",i===c-1&&st===3)});TH.ci=c}
+  if(!TH.drag)$("#tseek").value=t;
+  $("#tclock").textContent=fmt(t)+" / "+fmt(SHOW);
+  ov.style.setProperty("--prog",(t/SHOW*100).toFixed(2)+"%");
+}
+function tick(){
+  if(!TH.run)return;
+  const n=performance.now(),dt=Math.min(.5,(n-TH.last)/1000);TH.last=n;
+  TH.t=Math.min(SHOW,TH.t+dt);update();
+  if(TH.t>=SHOW){TH.run=false;paintPlay()}
+}
+function seek(t){
+  TH.t=Math.max(0,Math.min(SHOW,t));
+  TH.words.forEach(w=>w.classList.remove("lit"));TH.wi=0;TH.lead=-1;
+  update(true);if(TH.t>=SHOW){TH.run=false}paintPlay();
+}
+function setRun(on){TH.run=on;TH.last=performance.now();paintPlay()}
+function openTheater(m){
+  if(!m)return;
+  const ov=$("#ovtheater");CURM=m;buildRoom();theaterStage(m);theaterLayout();
+  ov.classList.remove("open","dim","out");ov.classList.add("on");document.body.style.overflow="hidden";
+  TH.stage=-1;TH.t=0;TH.wi=0;TH.ci=0;TH.lead=-1;
+  theaterPose("wide",true);void ov.offsetWidth;
+  update(true);TH.run=true;TH.last=performance.now();paintPlay();
+  clearInterval(TH.iv);TH.iv=setInterval(tick,100);
+  $("#ovtheater").focus({preventScroll:true});
+}
+function closeTheater(){
+  const ov=$("#ovtheater");if(!ov.classList.contains("on"))return;
+  clearInterval(TH.iv);TH.run=false;ov.classList.add("out");
+  setTimeout(()=>{ov.classList.remove("on","open","dim","out");ov.dataset.stage="0";document.body.style.overflow=""},still()?0:360);
+}
+$("#texit").addEventListener("click",closeTheater);
+$("#tendx").addEventListener("click",closeTheater);
+$("#treplay").addEventListener("click",()=>{seek(0);setRun(true)});
+$("#tplay").addEventListener("click",()=>{if(TH.t>=SHOW){seek(0);setRun(true)}else setRun(!TH.run)});
+$("#tseek").addEventListener("pointerdown",()=>{TH.drag=true});
+addEventListener("pointerup",()=>{TH.drag=false});
+$("#tseek").addEventListener("input",e=>seek(+e.target.value));
+$("#tdots").addEventListener("click",e=>{const b=e.target.closest("button[data-s]");if(b)seek(MARKS[+b.dataset.s])});
+addEventListener("resize",()=>{if($("#ovtheater").classList.contains("on")){theaterLayout();theaterPose(TH.cur,true)}});
+addEventListener("keydown",e=>{
+  if(!$("#ovtheater").classList.contains("on"))return;
+  if(e.key==="Escape")closeTheater();
+  else if(e.key===" "&&!e.target.closest("button,input,a")){e.preventDefault();$("#tplay").click()}
+  else if((e.key==="ArrowRight"||e.key==="ArrowLeft")&&e.target.id!=="tseek"){seek(TH.t+(e.key==="ArrowRight"?5:-5))}
+});
+
 async function moviePage(id){
   const t=++RT;setPage(`<div class="dh"><div class="wrap"><div class="dgrid"><div class="sk dposter"></div><div><div class="sk" style="height:60px;width:70%;margin-bottom:16px"></div><div class="sk" style="height:140px"></div></div></div></div></div>`,"movie");
   let m;try{m=await details(id)}catch(e){if(t===RT)notFound("We couldn't load that movie.");return}
-  if(t!==RT)return;document.title=`${m.title}${m.year?` (${m.year})`:""} · Moodreel`;
+  if(t!==RT)return;document.title=`${m.title}${m.year?` (${m.year})`:""} · Moodreel`;CURM=m;
   const bg=m.backdrop?`<img src="${m.backdrop.replace("/w1280/","/w1280/")}" alt="" decoding="async" data-t="${esc(m.title)}" data-y="${m.year||""}" data-w="1" onerror="fb(this)">`:art(m,"wide");
   const mo=moodsOf(m);
   const cast=m.cast.length?`<section class="wrap sec"><div class="sh"><div><h2>Cast</h2><p>Tap an actor to see their other movies.</p></div></div><div class="cast">${m.cast.map(c=>`<a class="cm" href="${personUrl(c.id)}" title="See ${esc(c.name)}'s movies"><div class="ph">${c.photo?`<img src="${c.photo}" alt="${esc(c.name)}" loading="lazy" onerror="this.parentNode.textContent='${esc(ini(c.name))}'">`:esc(ini(c.name))}</div><b>${esc(c.name)}</b>${c.character?`<small>${esc(c.character)}</small>`:""}</a>`).join("")}</div></section>`:"";
@@ -969,7 +1402,7 @@ async function moviePage(id){
   <div class="dinfo"><span class="eyebrow">${m.year||""}${m.runtime?" · "+rtm(m.runtime):""}</span><h1>${esc(m.title)}</h1>${m.tagline?`<p class="tag">“${esc(m.tagline)}”</p>`:""}${m.community?`<p class="tag">Added by ${esc(shown(m.by))}</p>`:""}
   <div class="row"><span class="pill" title="Audience rating out of 10">${I(m.community?"spark":"star")}${m.community?"Community pick":m.rating?m.rating.toFixed(1)+" / 10":"Not rated"}</span>${(m.genres||[]).map(g=>`<a class="chip" href="#/search?genre=${GID[g]||""}">${esc(g)}</a>`).join("")}</div>
   <p class="full">${esc(m.overview)}</p>
-  <div class="row" style="margin-bottom:20px">${fullWL(m)}<a class="btn g" href="${trailerUrl(m)}" target="_blank" rel="noopener noreferrer">${I("play")} Watch trailer</a><button class="btn g" data-act="random">${I("shuf")} Random movie</button></div>
+  <div class="row" style="margin-bottom:20px"><button class="btn" data-act="theater">${I("play")} Enter Theater</button>${fullWL(m)}<a class="btn g" href="${trailerUrl(m)}" target="_blank" rel="noopener noreferrer">${I("play")} Watch trailer</a><button class="btn g" data-act="random">${I("shuf")} Random movie</button></div>
   ${watchBox(m)}
   ${mo.length?`<div class="row" style="margin-bottom:20px"><span class="muted" style="font-size:13px">Fits your mood when you're</span>${mo.map(x=>`<a class="chip" href="#/mood/${x.id}">${I(x.ic)}${x.name}</a>`).join("")}</div>`:""}
   <div class="facts"><div class="fact"><small>Director</small><span>${esc(m.director||"—")}</span></div><div class="fact"><small>Runtime</small><span>${rtm(m.runtime)||"—"}</span></div><div class="fact"><small>Language</small><span>${esc(LANG[m.language]||(m.language||"—").toUpperCase())}</span></div><div class="fact"><small>Released</small><span>${m.year||"—"}</span></div></div>
@@ -1071,7 +1504,7 @@ function pullLever(){
   Promise.all([fetchP,...finish]).then(([res])=>{
     if(currentPage!=="roulette"){RL.busy=0;return}
     RL.res=res?{...res}:{none:1};paintResult();RL.busy=0;mc&&mc.classList.remove("pull");const b=$("#rbtn");b.disabled=false;b.lastChild.textContent=" Pull again";
-    if(res&&!still)$("#rres").scrollIntoView({behavior:"smooth",block:"nearest"});
+    if(res&&!still){confetti(innerWidth/2,innerHeight*.42);$("#rres").scrollIntoView({behavior:"smooth",block:"nearest"})}
   });
 }
 function roulettePage(){
@@ -1372,7 +1805,7 @@ function poweredPage(){
   ${row([0,1])}${row([1,0],"rev")}
   <section class="wrap sec"><div class="pbg">
   <div class="pc"><small>Movie data</small><h3>TMDB</h3><p>Every poster, cast list and rating comes from The Movie Database.</p></div>
-  <div class="pc"><small>Sign-in</small><h3>UniClvrPass</h3><p>One login for many apps. Your password goes straight to UniClvrPass and nowhere else.</p></div>
+  <div class="pc"><small>Sign-in</small><h3>Vault V</h3><p>Secure username and password login. Your password goes straight to Vault V and nowhere else.</p></div>
   <div class="pc"><small>Saves and community</small><h3>MoodFlix</h3><p>Your saved movies, profile picture and the movies people add live in the MoodFlix database.</p></div></div>
   <p class="muted" style="margin-top:22px;font-size:13px;max-width:640px">This product uses the TMDB API but is not endorsed or certified by TMDB.</p></section></div>`,"powered");
 }
@@ -1382,7 +1815,7 @@ function notFound(msg){setPage(`<div class="wrap empty" style="padding-top:170px
 /* ---------- router & events ---------- */
 function route(){
   const h=location.hash.slice(1)||"/",[path,q]=h.split("?"),p=path.split("/").filter(Boolean);
-  window.scrollTo(0,0);document.title="Moodreel · movies for how you feel";
+  window.scrollTo({top:0,behavior:"instant"});document.title="Moodreel · movies for how you feel";
   if(!p.length)return home();
   if(p[0]==="moods")return moodsPage();
   if(p[0]==="mood")return moodPage(p[1]);
@@ -1404,6 +1837,7 @@ document.addEventListener("click",e=>{
   switch(a.dataset.act){
     case"random":go(getRandom,a);break;
     case"rpull":pullLever();break;
+    case"theater":openTheater(CURM);break;
     case"rlock":{const k=+a.dataset.k;if(!RL.busy){RL.lock[k]=RL.lock[k]?0:1;paintReels()}break}
     case"dnacopy":{const st=dnaStats(WL),t=dnaText(st)+" "+location.origin+location.pathname;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("Copied your DNA"),()=>toast("Couldn't copy. Select and copy it manually."));break}
     case"surprise":go(()=>getSurprise(MP.mood),a);break;
@@ -1532,17 +1966,39 @@ $("#prrm").addEventListener("click",()=>setAvatar(null));
 ov3.addEventListener("click",e=>{if(e.target===ov3||e.target.closest("a[href]"))closeProfile();const b=e.target.closest("[data-act=setav]");if(b){const a=(ACT||[]).find(x=>x.key===b.dataset.k);if(a&&a.path)setAvatar(a)}});
 addEventListener("keydown",e=>{if(e.key==="Escape")closeProfile()});
 
-/* ---------- UniClvrPass sign-in (same account + session keys as UniClvrPass and Mockem) ---------- */
-const AUTH_URL="https://lbujqhnadkwqgojbhalw.supabase.co/functions/v1/auth";
+/* ---------- Vault V sign-in (username + password, Supabase Auth) ---------- */
+const VV_URL="https://tijhzamkzzoianenosoe.supabase.co",VV_KEY="sb_publishable_O6UZbgaxKkO72mKymljLsQ_aQ6QTSMc",VV_DOMAIN="users.example.app",VK="vv_session_v1";
+const USERNAME_RE=/^[a-z0-9_]{3,20}$/;
+async function vv(path,body,token){
+  const r=await fetch(VV_URL+path,{method:"POST",headers:{"Content-Type":"application/json",apikey:VV_KEY,Authorization:"Bearer "+(token||VV_KEY)},body:JSON.stringify(body||{})});
+  const d=await r.json().catch(()=>({}));
+  return{r,d};
+}
 function getSession(){
-  try{
-    const userId=localStorage.getItem("userId"),username=localStorage.getItem("username"),authToken=localStorage.getItem("authToken");
-    if(userId&&username&&authToken)return{userId,username,authToken};
-  }catch(e){}
+  try{const o=JSON.parse(localStorage.getItem(VK)||"null");if(o&&o.userId&&o.username&&o.authToken&&o.refresh)return o}catch(e){}
   return null;
 }
-function setSession(d){try{localStorage.setItem("userId",d.userId);localStorage.setItem("username",d.username);localStorage.setItem("authToken",d.token)}catch(e){}}
-function clearSession(){try{["userId","username","authToken"].forEach(k=>localStorage.removeItem(k))}catch(e){}}
+function setSession(o){try{localStorage.setItem(VK,JSON.stringify(o))}catch(e){}}
+function clearSession(){try{localStorage.removeItem(VK);["userId","username","authToken"].forEach(k=>localStorage.removeItem(k))}catch(e){}}  // also drops the old UniClvrPass keys
+function toSession(d,fallbackName){
+  const u=d.user||{};
+  return{userId:String(u.id),username:(typeof u.email==="string"&&u.email.includes("@")?u.email.split("@")[0]:fallbackName),authToken:d.access_token,refresh:d.refresh_token,exp:Date.now()+(+d.expires_in||3600)*1000};
+}
+// Vault V tokens last about an hour: swap in a fresh one shortly before it runs out
+let refreshing=null;
+async function freshToken(){
+  if(!me)return"";
+  if(me.exp-Date.now()>60000)return me.authToken;
+  if(!refreshing)refreshing=(async()=>{
+    try{
+      const{r,d}=await vv("/auth/v1/token?grant_type=refresh_token",{refresh_token:me.refresh});
+      if(!r.ok||!d.access_token)throw r.status>=500||!r.status?new Error("Couldn't reach Vault V. Try again in a moment."):new SaveAuthError("Your session has expired. Please sign in again.");
+      const n=toSession(d,me.username);me.authToken=n.authToken;me.refresh=n.refresh;me.exp=n.exp;setSession({userId:me.userId,username:me.username,authToken:me.authToken,refresh:me.refresh,exp:me.exp});
+    }catch(e){if(e instanceof SaveAuthError)throw e;throw new Error("Couldn't reach Vault V. Try again in a moment.")}
+    finally{refreshing=null}
+  })();
+  await refreshing;return me?me.authToken:"";
+}
 let me=null;
 const shown=u=>String(u).split("@")[0];
 function gmsg(t,k){const e=$("#gmsg");e.textContent=t;e.className="gmsg "+(k||"")}
@@ -1552,7 +2008,7 @@ function startApp(s){
   try{const c=JSON.parse(localStorage.getItem("mr_avatar:"+s.userId)||"null");if(avUrl(c))me.avatar=c}catch(e){}
   try{const v=localStorage.getItem("mr_adult:"+s.userId);if(v!=null)me.isAdult=v==="1"}catch(e){}
   paintMe();
-  document.body.classList.remove("locked");
+  document.body.classList.remove("locked","welcome");
   saveWL();syncDemo();route();pullSaves();loadCommunity();
   if(me.isAdult===undefined)openAgeGate();
 }
@@ -1562,45 +2018,172 @@ function showGate(msg){
   $("#gp").value="";gmsg(msg||"",msg?"error":"");
   setTimeout(()=>$("#gu").focus(),50);
 }
+function authErr(r,d,action){
+  const c=String(d.error_code||d.code||""),m=String(d.msg||d.message||d.error_description||"").toLowerCase();
+  if(r.status===429||c==="over_request_rate_limit")return"Too many attempts. Please wait a moment and try again.";
+  if(c==="invalid_credentials"||m.includes("invalid login"))return"Incorrect username or password.";
+  if(c==="user_already_exists"||m.includes("already registered"))return"That username is already taken.";
+  if(c==="weak_password")return"That password is too weak. Try a longer one.";
+  if(c==="signup_disabled")return"Sign-ups are currently turned off.";
+  if(r.status>=500)return"Vault V is having trouble. Try again later.";
+  return action==="register"?"Could not create the account. Try another username.":"Sign-in failed. Check your details and try again.";
+}
 async function authenticate(action){
-  const username=$("#gu").value.trim(),password=$("#gp").value;   // password is sent exactly as typed
+  const username=$("#gu").value.trim().toLowerCase(),password=$("#gp").value;   // password is sent exactly as typed
   if(!username||!password){gmsg("Enter your username and password.","error");return}
+  if(action==="register"){
+    if(!USERNAME_RE.test(username)){gmsg("Username must be 3–20 characters: letters, numbers or underscore.","error");return}
+    if(password.length<8){gmsg("Password must be at least 8 characters.","error");return}
+    if(password.length>72){gmsg("Password must be 72 characters or fewer.","error");return}
+  }
+  const email=username+"@"+VV_DOMAIN;
   const bs=[$("#gbtn"),$("#greg")];bs.forEach(b=>b.disabled=true);
   gmsg(action==="register"?"Creating account…":"Signing in…");
   try{
-    // the password goes straight to UniClvrPass and nowhere else
-    const r=await fetch(AUTH_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action,username,password})});
-    const d=await r.json().catch(()=>({}));
-    if(r.status===429){const s=Math.max(1,Math.ceil(+d.retryAfter||60));gmsg("Too many attempts. Try again in "+(s>=90?Math.ceil(s/60)+" minutes":s+" seconds")+".","error");return}
-    if(!r.ok||!d.success||d.userId==null||!d.token){
-      gmsg(r.status>=500?"UniClvrPass is having trouble. Try again later.":d.error||(action==="register"?"Could not create the account. Try another username.":"Sign-in failed. Check your details and try again."),"error");return;
+    // the password goes straight to Vault V and nowhere else
+    if(action==="register"){
+      const f=await vv("/rest/v1/rpc/username_available",{p_username:username});
+      if(f.r.ok&&f.d===false){gmsg("That username is already taken.","error");return}
+      const su=await vv("/auth/v1/signup",{email,password,data:{username}});
+      if(!su.r.ok){gmsg(authErr(su.r,su.d,action),"error");return}
+      if(su.d.user&&su.d.user.identities&&su.d.user.identities.length===0){gmsg("That username is already taken.","error");return}
     }
-    setSession(d);
+    const{r,d}=await vv("/auth/v1/token?grant_type=password",{email,password});
+    if(!r.ok||!d.access_token||!d.user){
+      gmsg(action==="register"&&r.ok===false&&/confirm/i.test(JSON.stringify(d))?"Account created, but sign-in is blocked: turn off “Confirm email” in Vault V.":authErr(r,d,action),"error");return;
+    }
+    const s=toSession(d,username);setSession(s);
     $("#gu").value="";$("#gp").value="";gmsg("");
-    startApp({userId:String(d.userId),username:d.username,authToken:d.token});
-  }catch(err){gmsg("Could not reach UniClvrPass. Check your connection.","error")}
+    startApp(s);
+  }catch(err){gmsg("Could not reach Vault V. Check your connection.","error")}
   finally{bs.forEach(b=>b.disabled=false)}
 }
 $("#gform").addEventListener("submit",e=>{e.preventDefault();authenticate("login")});
 $("#greg").addEventListener("click",()=>authenticate("register"));
 $("#out").addEventListener("click",()=>{
   const t=me&&me.authToken;
-  if(t)fetch(AUTH_URL,{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+t},body:JSON.stringify({action:"logout"})}).catch(()=>{});
+  if(t)vv("/auth/v1/logout",{},t).catch(()=>{});
   clearSession();history.replaceState(null,"","#/");showGate();   // clear locally even if the logout call fails
 });
 
-/* boot */
-$("#ic-s").innerHTML=I("search");$("#msearch").innerHTML=I("search");$("#msearch").addEventListener("click",()=>location.hash="#/search");$("#rnd").innerHTML=I("shuf");$("#keyb").innerHTML=I("key");$("#mwl").innerHTML=I("book");$("#madd").innerHTML=I("plus");$("#madm").innerHTML=I("shield");$("#out").innerHTML=I("out");$("#gmasc").innerHTML=mascot("g");
-try{["mr_save_token","mr_save_token_uid"].forEach(k=>localStorage.removeItem(k))}catch(e){}
-{const s=getSession();if(s)startApp(s);else showGate()}
-setTimeout(()=>{const c=$("#curtain");if(c)c.remove()},1200);
+/* ---------- scroll animations: reveal on scroll, progress bar, parallax, smart nav ---------- */
+const sprog=document.createElement("div");sprog.id="sprog";sprog.setAttribute("aria-hidden","true");document.body.appendChild(sprog);
+function fxOK(){return !matchMedia("(prefers-reduced-motion: reduce)").matches&&document.documentElement.dataset.perf!=="low"&&"IntersectionObserver" in window&&!!Element.prototype.animate}
+const RVSEL=[
+  [".sh",()=>({transform:"translateX(-48px)"})],
+  [".mc",(e,i)=>({transform:`translateY(60px) rotate(${i%2?5:-5}deg) scale(.86)`})],
+  [".cw",(e,i)=>({transform:`translateY(64px) rotate(${i%2?-3:3}deg) scale(.9)`})],
+  [".dc",()=>({transform:"translateY(54px) scale(.95)"})],
+  [".fx",e=>{const l=e.matches(":nth-child(odd)");return{transform:`translateX(${l?-80:80}px) rotate(${l?-3:3}deg)`}}],
+  [".feat",()=>({transform:"scale(.9)",clipPath:"inset(10% 6% round 26px)"})],
+  [".pc,.fact,.dbox,.dnahero,.af,.mach,.cm,.dposter,.empty",()=>({transform:"translateY(46px) scale(.94)"})]
+];
+let rvIO=null,rvRaf=0;
+function rvInit(){
+  if(rvIO||!fxOK())return;
+  rvIO=new IntersectionObserver(es=>{
+    const vis=es.filter(e=>e.isIntersecting).map(e=>e.target).sort((a,b)=>{const A=a.getBoundingClientRect(),B=b.getBoundingClientRect();return A.top-B.top||A.left-B.left});
+    vis.forEach((el,i)=>{rvIO.unobserve(el);playRV(el,Math.min(i,9)*65)});
+  },{threshold:.1,rootMargin:"0px 0px -5% 0px"});
+}
+function playRV(el,delay){
+  el.classList.remove("rv");
+  const from=el._rv?el._rv(el,[...el.parentNode.children].indexOf(el)):{transform:"translateY(40px)"};
+  const to={opacity:1,transform:"none"};if(from.clipPath)to.clipPath="inset(0% 0% 0% 0% round 26px)";
+  el.animate([{opacity:0,...from},to],{duration:760,delay,easing:"cubic-bezier(.22,1,.36,1)",fill:"backwards"});
+}
+function rvScan(){
+  if(!fxOK())return;rvInit();
+  for(const[sel,fn]of RVSEL)$$(sel,$("#app")).forEach(el=>{if(el._rvd)return;el._rvd=1;el._rv=fn;el.classList.add("rv");rvIO.observe(el)});
+}
+new MutationObserver(()=>{if(rvRaf)return;rvRaf=requestAnimationFrame(()=>{rvRaf=0;rvScan()})}).observe($("#app"),{childList:true,subtree:true});
 
+const wel=$("#welcome");let sfxRaf=0,lastY=0;
+const clamp01=v=>Math.max(0,Math.min(1,v));
+function sfxFrame(){
+  sfxRaf=0;
+  const inW=document.body.classList.contains("welcome"),vh=innerHeight;
+  const y=inW?wel.scrollTop:scrollY,max=Math.max(1,(inW?wel.scrollHeight:document.documentElement.scrollHeight)-vh);
+  sprog.style.transform=`scaleX(${clamp01(y/max).toFixed(4)})`;
+  if(!fxOK())return;
+  if(inW){
+    const t=$("#wtxt"),d=$("#wdeco");
+    if(t){t.style.transform=`translate3d(0,${(y*.22).toFixed(1)}px,0)`;t.style.opacity=String(clamp01(1-y/(vh*.75)).toFixed(3))}
+    if(d)d.style.transform=`translate3d(0,${(y*.45).toFixed(1)}px,0)`;
+    const r=$("#wroom");
+    if(r){const b=r.getBoundingClientRect(),p=clamp01((vh-b.top)/(vh+b.height)),k=clamp01((p-.28)/.34);$("#wroomin").style.transform=`scale(${(1+.95*k*k*(3-2*k)).toFixed(3)})`}
+    return;
+  }
+  const h=$(".hero");
+  if(h&&y<vh*1.3){
+    const w=$(".wrap",h),d=$(".deco",h);
+    if(w){w.style.transform=`translate3d(0,${(y*.16).toFixed(1)}px,0)`;w.style.opacity=String(clamp01(1-y/(vh*.95)).toFixed(3))}
+    if(d)d.style.transform=`translate3d(0,${(y*.32).toFixed(1)}px,0)`;
+  }
+  const bg=$(".dbg");if(bg&&y<vh*1.2)bg.style.transform=`translate3d(0,${(y*.3).toFixed(1)}px,0)`;
+  $$(".feat").forEach(f=>{const b=f.getBoundingClientRect();if(b.bottom<0||b.top>vh)return;const im=$(".bg",f);if(im)im.style.transform=`translate3d(0,${((b.top+b.height/2-vh/2)*-.09).toFixed(1)}px,0) scale(1.14)`});
+  const dy=y-lastY;lastY=y;
+  if(y>280&&dy>6&&!nav.contains(document.activeElement))nav.classList.add("h");else if(dy<-6||y<200)nav.classList.remove("h");
+}
+const sfxSchedule=()=>{if(!sfxRaf)sfxRaf=requestAnimationFrame(sfxFrame)};
+addEventListener("scroll",sfxSchedule,{passive:true});wel.addEventListener("scroll",sfxSchedule,{passive:true});
+addEventListener("resize",sfxSchedule);
+
+/* ---------- hovering: spotlight on cards, 3D tilt on posters ---------- */
+let ptRaf=0,ptE=null;
+document.addEventListener("pointermove",e=>{
+  if(e.pointerType==="touch")return;ptE=e;if(ptRaf)return;
+  ptRaf=requestAnimationFrame(()=>{
+    ptRaf=0;const t=ptE.target;if(!t||!t.closest)return;
+    const s=t.closest(".mc,.fx,.pc");
+    if(s){const r=s.getBoundingClientRect();s.style.setProperty("--mx",(ptE.clientX-r.left)+"px");s.style.setProperty("--my",(ptE.clientY-r.top)+"px")}
+    const c=t.closest(".card");
+    if(c){const pw=$(".pw",c);if(pw){const r=pw.getBoundingClientRect(),x=(ptE.clientX-r.left)/r.width-.5,y=(ptE.clientY-r.top)/r.height-.5;pw.style.setProperty("--ry",(x*16).toFixed(1)+"deg");pw.style.setProperty("--rx",(-y*16).toFixed(1)+"deg")}}
+  });
+},{passive:true});
+document.addEventListener("pointerout",e=>{const c=e.target.closest&&e.target.closest(".card");if(c&&!c.contains(e.relatedTarget)){const pw=$(".pw",c);if(pw){pw.style.removeProperty("--rx");pw.style.removeProperty("--ry")}}});
+
+/* ---------- confetti ---------- */
+function confetti(x,y,n=80){
+  if(still())return;
+  const cols=["#e0293a","#ffd15a","#ffffff","#4b93ff","#ff8a5c","#7be0a3"],w=document.createElement("div");w.className="confetti";document.body.appendChild(w);
+  for(let i=0;i<n;i++){
+    const d=document.createElement("i"),a=Math.random()*Math.PI*2,v=200+Math.random()*420,dx=Math.cos(a)*v,dy=Math.sin(a)*v;
+    d.style.cssText=`left:${x}px;top:${y}px;background:${cols[i%cols.length]};width:${6+Math.random()*7}px;height:${8+Math.random()*10}px`;w.appendChild(d);
+    d.animate([{transform:"translate(0,0) rotate(0)",opacity:1},{transform:`translate(${dx}px,${dy-170}px) rotate(${Math.random()*720}deg)`,opacity:1,offset:.42},{transform:`translate(${dx*1.15}px,${dy+430}px) rotate(${Math.random()*1080}deg)`,opacity:0}],{duration:1500+Math.random()*900,easing:"cubic-bezier(.2,.7,.3,1)"});
+  }
+  setTimeout(()=>w.remove(),2600);
+}
+
+/* ---------- "Tonight I'm feeling ..." cycling mood word ---------- */
+let vibeT=0;
+function vibeCycle(id,stillOn){
+  clearInterval(vibeT);const el=$("#"+id);if(!el)return;let i=Math.floor(Math.random()*MOODS.length);
+  const paint=()=>{const m=MOODS[i%MOODS.length];el.textContent=m.name.toLowerCase();if(el.tagName==="A")el.href="#/mood/"+m.id;el.style.setProperty("--vh",MHUE[m.id]);el.style.animation="none";void el.offsetWidth;el.style.animation=""};
+  paint();vibeT=setInterval(()=>{if(!stillOn()||!$("#"+id)){clearInterval(vibeT);return}i++;paint()},1700);
+}
+const startVibe=()=>vibeCycle("vibe",()=>currentPage==="home");
+
+/* ---------- welcome page extras ---------- */
+function countUp(el){
+  const to=+el.dataset.count;if(still()||!to){el.textContent=to;return}
+  const t0=performance.now(),d=1400,step=n=>{const k=Math.min(1,(n-t0)/d);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step);
+}
+let wBuilt=false;
+function welcomeFX(){
+  if(wBuilt)return;wBuilt=true;
+  $("#wdeco").innerHTML=stickers();
+  const t=MOODS.map(m=>`<span>${m.name}</span>`).join("");$("#wtick").innerHTML=t+t+t+t;
+  $("#wroomsvg").innerHTML=roomSVG("wp",perfLow());
+  vibeCycle("wvibe",()=>document.body.classList.contains("welcome"));
+  sfxSchedule();
+}
+rvScan();
 /* ---------- theme (light/dark) + performance (high/low) ---------- */
 function paintToggles(){
   const th=document.documentElement.dataset.theme,pf=document.documentElement.dataset.perf;
-  const tt=$("#themeTog"),pt=$("#perfTog");
-  if(tt){tt.textContent=th==="light"?"☀️":"🌙";tt.title="Switch to "+(th==="light"?"dark":"light")+" mode"}
-  if(pt){pt.textContent=pf==="low"?"🐢":"⚡";pt.title="Animation quality: "+(pf==="low"?"Lite (tap for Full)":"Full (tap for Lite)")}
+  [$("#themeTog"),$("#wthemeTog")].forEach(tt=>{if(tt){tt.textContent=th==="light"?"☀️":"🌙";tt.title="Switch to "+(th==="light"?"dark":"light")+" mode"}});
+  [$("#perfTog"),$("#wperfTog")].forEach(pt=>{if(pt){pt.textContent=pf==="low"?"🐢":"⚡";pt.title="Animation quality: "+(pf==="low"?"Lite (tap for Full)":"Full (tap for Lite)")}});
 }
 function setTheme(t,save){document.documentElement.dataset.theme=t;if(save!==false)try{localStorage.setItem("mr_theme",t)}catch(e){}paintToggles()}
 function setPerf(p,save){document.documentElement.dataset.perf=p;if(save!==false)try{localStorage.setItem("mr_perf",p)}catch(e){}paintToggles()}
@@ -1610,13 +2193,39 @@ function setPerf(p,save){document.documentElement.dataset.perf=p;if(save!==false
   try{pf=localStorage.getItem("mr_perf")}catch(e){}
   if(!th)th=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";
   if(!pf){
-    const lowMem=(navigator.deviceMemory||8)<=4,lowCpu=(navigator.hardwareConcurrency||8)<=4,reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const lowMem=(navigator.deviceMemory||8)<=2,lowCpu=(navigator.hardwareConcurrency||8)<=2,reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
     pf=(lowMem||lowCpu||reduced)?"low":"high";
   }
   setTheme(th,false);setPerf(pf,false);
 })();
 $("#themeTog")?.addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="light"?"dark":"light"));
 $("#perfTog")?.addEventListener("click",()=>setPerf(document.documentElement.dataset.perf==="low"?"high":"low"));
+$("#wthemeTog")?.addEventListener("click",()=>setTheme(document.documentElement.dataset.theme==="light"?"dark":"light"));
+$("#wperfTog")?.addEventListener("click",()=>setPerf(document.documentElement.dataset.perf==="low"?"high":"low"));
+/* boot */
+$("#ic-s").innerHTML=I("search");$("#msearch").innerHTML=I("search");$("#msearch").addEventListener("click",()=>location.hash="#/search");$("#rnd").innerHTML=I("shuf");
+$("#texit").innerHTML=I("x")+" Exit theater";$("#wi1").innerHTML=I("smile");$("#wi2").innerHTML=I("dice");$("#wi3").innerHTML=I("dna");$("#wi4").innerHTML=I("play");$("#wisamp").innerHTML=I("play");$("#keyb").innerHTML=I("key");$("#mwl").innerHTML=I("book");$("#madd").innerHTML=I("plus");$("#madm").innerHTML=I("shield");$("#out").innerHTML=I("out");$("#gmasc").innerHTML=mascot("g");
+try{["mr_save_token","mr_save_token_uid"].forEach(k=>localStorage.removeItem(k))}catch(e){}
+
+/* ---------- welcome / landing page ---------- */
+let wObs=null;
+function showWelcome(){welcomeFX();
+  document.body.classList.add("locked","welcome");$("#welcome").scrollTop=0;
+  if(!wObs){
+    wObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");e.target.querySelectorAll("[data-count]").forEach(countUp)}}),{threshold:.2});
+    $$(".wreveal",$("#welcome")).forEach(el=>wObs.observe(el));
+  }
+}
+function leaveWelcome(){document.body.classList.remove("welcome")}
+$("#wskip").addEventListener("click",()=>{leaveWelcome();showGate()});
+$("#wlogin").addEventListener("click",()=>{leaveWelcome();showGate()});
+$("#wsample").addEventListener("click",()=>{
+  const sample=DEMO.find(d=>["ta","te","ml","hi"].includes(d.language))||DEMO[0];
+  openTheater(sample);
+});
+{const s=getSession();if(s)startApp(s);else showWelcome()}
+setTimeout(()=>{const c=$("#curtain");if(c)c.remove()},1200);
+
 </script>
 </body>
 </html>
