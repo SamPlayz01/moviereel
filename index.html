@@ -1113,7 +1113,7 @@ const search=(q,f,page)=>safe(async()=>{
 
 /* ---------- saved movies: stored per Vault V account in the Vault V Supabase project ---------- */
 const SB_PUB="https://tijhzamkzzoianenosoe.supabase.co";
-const SAVES_URL=SB_PUB+"/functions/v1/saves";
+const SAVES_URL=SB_PUB+"/functions/v1/smooth-api";
 const SC="mr_saved_v1:",OLD="mr_watchlist_v1";
 let WL=[],UID="";const busy=new Set();
 class SaveAuthError extends Error{}
