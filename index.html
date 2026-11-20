@@ -405,6 +405,7 @@ textarea.fi{height:auto;padding:12px 14px;resize:vertical}
 .ttp{position:relative;display:block;width:100%;aspect-ratio:2/3;border-radius:6px;overflow:hidden;background:#140306;border:5px solid #2a1a10;outline:2px solid #c9a24b;outline-offset:-5px;box-shadow:0 0 0 1px #000,0 0 26px rgba(255,200,110,.28),0 14px 30px -10px rgba(0,0,0,.8)}
 .ttp img,.ttp .art{width:100%;height:100%;object-fit:cover;display:block}
 .ttp:after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.18),transparent 38%);pointer-events:none}
+.ttbonus{position:absolute;top:6px;left:6px;z-index:2;background:#e0293a;color:#fff;font:800 9px/1 Inter,sans-serif;letter-spacing:.12em;padding:4px 7px;border-radius:99px;box-shadow:0 2px 8px rgba(0,0,0,.5)}
 .ttcase b{color:#fff1d6;text-shadow:0 1px 6px #000;font-size:13px;line-height:1.25;min-height:2.5em;display:flex;align-items:center}
 .ttk{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:7px 8px;background:linear-gradient(180deg,#e5b94e,#c9922a);color:#2a1503;font-weight:900;font-size:10.5px;letter-spacing:.14em;border-radius:6px;-webkit-mask:radial-gradient(circle 6px at 0 50%,transparent 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 6px at 100% 50%,transparent 98%,#000) right/51% 100% no-repeat;mask:radial-gradient(circle 6px at 0 50%,transparent 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 6px at 100% 50%,transparent 98%,#000) right/51% 100% no-repeat;transform-origin:50% 0;transition:transform .3s}
 .ttk:before{content:"";position:absolute;left:30%;top:4px;bottom:4px;border-left:2px dashed rgba(42,21,3,.45)}
@@ -475,14 +476,18 @@ body.infin #ovtheater{visibility:hidden}
 #fin.s4 .fchar{animation:fstep 3.4s linear forwards}
 #fin.s5 .fchar{opacity:1;transform:translateZ(230px)}
 @keyframes fstep{
-0%{opacity:0;transform:translateZ(-170px) translateY(calc(var(--ch)*.05)) scale(.5);filter:brightness(0)}
-14%{opacity:1;transform:translateZ(-120px) translateY(calc(var(--ch)*.04)) scale(.55) rotateX(10deg);filter:brightness(0)}
-30%{transform:translateZ(-60px) translateY(calc(var(--ch)*.1)) scale(.6) rotateX(18deg);filter:brightness(.05)}
-48%{transform:translateZ(190px) translateY(calc(var(--ch)*-.12)) scale(.95) rotateX(-10deg);filter:brightness(.55)}
-64%{transform:translateZ(360px) translateY(calc(var(--ch)*-.22)) scale(1.05) rotateX(-4deg) rotateZ(-3deg);filter:brightness(1)}
-80%{transform:translateZ(230px) translateY(calc(var(--ch)*.03)) scale(1.04,.9) rotateX(2deg);filter:brightness(1)}
+0%{opacity:0;transform:translateZ(-170px) translateY(calc(var(--ch)*.05)) scale(.5)}
+14%{opacity:1;transform:translateZ(-120px) translateY(calc(var(--ch)*.04)) scale(.55) rotateX(10deg)}
+30%{transform:translateZ(-60px) translateY(calc(var(--ch)*.1)) scale(.6) rotateX(18deg)}
+48%{transform:translateZ(190px) translateY(calc(var(--ch)*-.12)) scale(.95) rotateX(-10deg)}
+64%{transform:translateZ(360px) translateY(calc(var(--ch)*-.22)) scale(1.05) rotateX(-4deg) rotateZ(-3deg)}
+80%{transform:translateZ(230px) translateY(calc(var(--ch)*.03)) scale(1.04,.9) rotateX(2deg)}
 88%{transform:translateZ(230px) translateY(calc(var(--ch)*-.025)) scale(.98,1.04)}
-100%{opacity:1;transform:translateZ(230px) translateY(0) scale(1);filter:brightness(1)}}
+100%{opacity:1;transform:translateZ(230px) translateY(0) scale(1)}}
+@keyframes fsil{0%,30%{filter:brightness(0)}48%{filter:brightness(.55)}64%,100%{filter:brightness(1)}}
+@keyframes fsilc{0%,30%{filter:brightness(0)}100%{filter:brightness(.45)}}
+#fin.s4 .fpl.fb:not(.core) img,#fin.s4 .fpl.sd img{animation:fsil 3.4s linear forwards}
+#fin.s4 .fpl.core img{animation:fsilc 3.4s linear forwards}
 .fbobw{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;animation:fbob 3.4s ease-in-out infinite}
 @keyframes fbob{0%,100%{transform:translateY(0) rotateZ(-.8deg)}50%{transform:translateY(-8px) rotateZ(.8deg)}}
 .frig{position:absolute;left:0;top:0;width:0;height:var(--ch);transform-style:preserve-3d;transform:rotateY(var(--ry,0deg))}
@@ -1007,7 +1012,7 @@ nav.h{transform:translateY(-112%)}
         <div class="tstg t2"><h3>The story</h3><p id="tsyn"></p></div>
         <div class="tstg t3"><h3>Starring</h3><div class="tcastrow" id="tcastrow"></div></div>
         <div class="tstg t4"><h3>Catch it after the show</h3><div class="toutrow" id="toutrow"></div></div>
-        <div class="tstg t5 tend"><span class="eyebrow">Thanks for watching</span><h2>The End</h2><p>Lights up. Time to pick your next movie.</p><div class="toutrow"><button class="btn" id="treplay" type="button">Replay</button><a class="btn g" id="tendtr" href="#" target="_blank" rel="noopener noreferrer">Watch trailer</a><button class="btn g" id="tendx" type="button">Leave theater</button></div></div>
+        <div class="tstg t5 tend"><span class="eyebrow">Thanks for watching</span><h2>The End</h2><p>Lights up. Time to pick your next movie.</p><div class="toutrow"><button class="btn" id="treplay" type="button">Replay</button><button class="btn" id="tbonus" type="button" hidden>Bonus scene</button><a class="btn g" id="tendtr" href="#" target="_blank" rel="noopener noreferrer">Watch trailer</a><button class="btn g" id="tendx" type="button">Leave theater</button></div></div>
       </div>
       <div class="tflick"></div><div class="tflash" id="tflash"></div>
       <div class="tcurt l"></div><div class="tcurt r"></div>
@@ -1654,6 +1659,7 @@ const stageOf=t=>{let s=0;MARKS.forEach((m,i)=>{if(t>=m)s=i});return s};
 const still=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
 const perfLow=()=>document.documentElement.dataset.perf==="low";
 function theaterStage(m){
+  {const tb=$("#tbonus");if(tb)tb.hidden=!bonusFor(m)}
   const bg=m.backdrop||m.poster||"";
   $("#tbg").style.backgroundImage=bg?`url("${bg}")`:"";
   $("#ttitle").textContent=m.title;$("#ttag").textContent=m.tagline||"";
@@ -1720,12 +1726,12 @@ function tick(){
   if(!TH.run)return;
   const n=performance.now(),dt=Math.min(.5,(n-TH.last)/1000);TH.last=n;
   TH.t=Math.min(SHOW,TH.t+dt);update();
-  if(TH.t>=SHOW){TH.run=false;paintPlay();const bk=bonusFor(CURM);if(bk){setTimeout(()=>{if(!TH.run&&$("#ovtheater").classList.contains("on")&&!FIN.on)finStart(bk)},2600)}else setTimeout(()=>{if(!TH.run)musicLevel(0,2)},2500)}
+  if(TH.t>=SHOW){TH.run=false;paintPlay();if(bonusFor(CURM))bonusSoon();else setTimeout(()=>{if(!TH.run)musicLevel(0,2)},2500)}
 }
 function seek(t){
-  finStop();TH.t=Math.max(0,Math.min(SHOW,t));
+  finStop();clearTimeout(FIN.bt);TH.t=Math.max(0,Math.min(SHOW,t));
   TH.words.forEach(w=>w.classList.remove("lit"));TH.wi=0;TH.lead=-1;
-  songSeek(TH.t);update(true);if(TH.t>=SHOW){TH.run=false}else musicLevel(.5,.3);paintPlay();
+  songSeek(TH.t);update(true);if(TH.t>=SHOW){TH.run=false;if(bonusFor(CURM))bonusSoon()}else musicLevel(.5,.3);paintPlay();
 }
 function setRun(on){TH.run=on;TH.last=performance.now();paintPlay();if(on)musicLevel(.5,.3);musicRun(on)}
 
@@ -1919,12 +1925,14 @@ function finStart(key){
   finT(()=>{FIN.ry=0;f.classList.add("land");finBurst(80);finFlash();finSfx("land")},10320);finT(()=>f.classList.remove("land"),11500);
   finT(()=>{finStage(5)},11000);
 }
+function bonusSoon(){clearTimeout(FIN.bt);FIN.bt=setTimeout(()=>{const k=bonusFor(CURM);if(k&&!TH.run&&TH.t>=SHOW&&$("#ovtheater").classList.contains("on")&&!FIN.on)finStart(k)},2600)}
 function finClear(){FIN.tm.forEach(clearTimeout);FIN.tm=[]}
 function finStop(){
   if(!FIN.on)return;FIN.on=0;finClear();cancelAnimationFrame(FIN.raf);
   const f=$("#fin");f.className="";f.setAttribute("aria-hidden","true");document.body.classList.remove("infin");
   FIN.ps=[];
 }
+$("#tbonus").addEventListener("click",()=>{const k=bonusFor(CURM);if(k)finStart(k)});
 $("#fexit").addEventListener("click",()=>{finStop();closeTheater()});
 $("#fagain").addEventListener("click",()=>{finStop();seek(0);setRun(true)});
 $("#frep").addEventListener("click",()=>{if(FIN.key)finStart(FIN.key)});
@@ -2058,7 +2066,7 @@ $("#tcheer").addEventListener("click",cheerNow);
 function toggleFull(){const ov=$("#ovtheater");try{if(document.fullscreenElement)document.exitFullscreen();else if(ov.requestFullscreen)ov.requestFullscreen()}catch(e){}}
 $("#tfull").addEventListener("click",toggleFull);
 function closeTheater(){
-  finStop();const ov=$("#ovtheater");if(!ov.classList.contains("on"))return;
+  finStop();clearTimeout(FIN.bt);const ov=$("#ovtheater");if(!ov.classList.contains("on"))return;
   try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}
   clearInterval(TH.iv);TH.run=false;cancelAnimationFrame(TH.raf);document.body.classList.remove("intheater");ov.classList.add("out");musicStop();
   clearTimeout(TH.ct);
@@ -2500,7 +2508,7 @@ const COUNTER=`<svg class="ttcounter" viewBox="0 0 1000 170" preserveAspectRatio
 function theaterTimePage(){
   ++RT;currentPage="theatertime";document.title="Theater Time · Moodreel";
   setPage(`<div><section class="wrap tool" style="padding-top:104px"><div class="ttsign"><span class="eyebrow" style="color:#ffb347">Box office · now showing</span><h1>THEATER TIME</h1><p>Pick a poster, tear your ticket and take a seat. A private 2-minute screening with the film's own soundtrack.</p></div>
-  <div class="ttwall" id="ttw">${TT_FILMS.map((f,i)=>`<button type="button" class="ttcase" data-tt="${i}" aria-label="Enter the theater for ${esc(f[0])}"><span class="ttp" id="ttp${i}">${art({title:f[0]})}</span><b>${esc(f[0])}</b><span class="ttk"><span>ADMIT ONE</span></span></button>`).join("")}</div>${COUNTER}</section></div>`,"theatertime");
+  <div class="ttwall" id="ttw">${TT_FILMS.map((f,i)=>`<button type="button" class="ttcase" data-tt="${i}" aria-label="Enter the theater for ${esc(f[0])}"><span class="ttp" id="ttp${i}">${art({title:f[0]})}</span><b>${esc(f[0])}</b>${f[2]==="the-odyssey"||f[2]==="scene"?'<span class="ttbonus">BONUS SCENE</span>':""}<span class="ttk"><span>ADMIT ONE</span></span></button>`).join("")}</div>${COUNTER}</section></div>`,"theatertime");
   ttHydrate();
 }
 async function ttHydrate(){
