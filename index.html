@@ -312,7 +312,39 @@ body.locked .gate{display:flex}
 .tools select{height:38px;background:var(--p2);border:1px solid var(--l2);border-radius:10px;padding:0 10px;font-size:14px}
 @media(max-width:720px){.pp{grid-template-columns:1fr;justify-items:center;text-align:center}.pp-photo{width:170px}.pp .meta,.pp .row{justify-content:center}}
 a.cm{display:block;transition:transform .3s var(--bounce)}a.cm:hover{transform:translateY(-5px) rotate(-3deg)}
+
+/* accent colours, command palette, streak, announcement */
+.acc{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 12px;align-items:center}
+.acc span{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--m);margin-right:4px}
+.acc button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;box-shadow:0 0 0 1px var(--l2);transition:transform .2s var(--bounce)}
+.acc button:hover{transform:scale(1.15)}.acc button.on{border-color:#fff}
+.streak{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:3px 10px;border-radius:99px;background:rgba(255,160,40,.14);border:1px solid rgba(255,160,40,.45);font-size:12px;font-weight:700;color:#ffb347}
+.streak .i{width:14px;height:14px}
+#cmdk{position:fixed;inset:0;z-index:9800;display:none;align-items:flex-start;justify-content:center;padding:12vh 16px 16px;background:rgba(0,0,0,.6)}
+#cmdk.on{display:flex}
+#cmdk .cb{width:min(600px,100%);background:var(--p);border:1px solid var(--l2);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:hidden}
+#cmdk input{width:100%;height:56px;padding:0 20px;background:transparent;border:0;border-bottom:1px solid var(--l);font-size:17px;color:var(--t);outline:0}
+#cmdk ul{list-style:none;max-height:min(50vh,380px);overflow:auto;padding:8px}
+#cmdk li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14.5px}
+#cmdk li small{color:var(--m);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+#cmdk li.on,#cmdk li:hover{background:rgba(176,15,29,.22)}
+#cmdk .ft{padding:8px 16px;border-top:1px solid var(--l);font-size:11.5px;color:var(--m)}
+#annc{position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:60;max-width:min(680px,calc(100% - 24px));display:none;gap:12px;align-items:center;padding:10px 16px;border-radius:14px;background:var(--p2);border:1px solid var(--l2);box-shadow:0 10px 30px rgba(0,0,0,.45);font-size:14px}
+#annc.on{display:flex;animation:up .4s both}
+#annc.warn{border-color:#ffb347;background:rgba(255,160,40,.12)}#annc.promo{border-color:var(--r2);background:rgba(176,15,29,.18)}
+#annc button{margin-left:6px;opacity:.7;font-size:18px;line-height:1}
+body.intheater #annc{display:none}
 /* admin */
+.agrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin:0 0 28px}
+.acard{padding:18px;border-radius:18px;background:linear-gradient(180deg,var(--p2),var(--p));border:1px solid var(--l)}
+.acard h3{font-size:17px;margin-bottom:6px}
+.acard textarea,.atools input,.atools select,.acard select{background:var(--p2);border:1px solid var(--l2);border-radius:12px;color:var(--t);padding:10px 12px;width:100%}
+.acard select,.atools select{width:auto;height:40px;padding:0 10px}
+.atools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end}.atools input{height:42px;max-width:220px}
+.lgd{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.ck{display:inline-flex;gap:6px;align-items:center;font-size:13.5px}
+.bdg{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:99px;background:rgba(176,15,29,.25);border:1px solid rgba(176,15,29,.5);margin-left:6px}.bdg.bad{background:rgba(255,160,40,.15);border-color:#ffb347;color:#ffb347}
+.alog{list-style:none;display:grid;gap:6px;margin-bottom:40px}.alog li{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-radius:12px;background:var(--p);border:1px solid var(--l);font-size:14px}.alog small{color:var(--m);white-space:nowrap}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:8px 0 28px}
 .stat{padding:18px;border-radius:18px;background:linear-gradient(180deg,var(--p2),var(--p));border:1px solid var(--l);box-shadow:0 5px 0 var(--dk);animation:up .5s both}
 .stat b{display:block;font-size:40px;letter-spacing:-.04em;line-height:1;color:var(--t)}
@@ -519,25 +551,27 @@ body{padding-bottom:env(safe-area-inset-bottom,0)}
 .tcam{position:absolute;left:0;top:0;width:1000px;height:720px;transform-origin:0 0;transition:transform 3.6s cubic-bezier(.65,0,.2,1);will-change:transform}
 .tcam.now{transition:none}
 .troom{position:absolute;left:-300px;top:-250px;width:1600px;height:1200px;overflow:visible;display:block}
-.tstick{pointer-events:none;transition:filter 2.4s}
-.ov.theater.dim .tstick{filter:brightness(.6)}
-.tcrowd{opacity:0;transition:opacity 1.1s}.troom.seen .tcrowd{opacity:1}
-.cp .ar{display:none}.troom.cheer .cp .ar{display:inline}
-.troom.cheer .cp{animation:tbob .42s ease-in-out infinite;animation-delay:var(--d,0s)}
-@keyframes tbob{50%{transform:translateY(-7px)}}
-@media(prefers-reduced-motion:reduce){.tcrowd{transition:none}.troom.cheer .cp{animation:none}}
-.tl{animation:ttw 3.4s ease-in-out infinite}
+.tstick{pointer-events:none;left:-100px;top:200px;width:1200px;height:700px;will-change:transform}
+.tcrowdl{opacity:0;transition:opacity 1.1s;will-change:opacity,transform;pointer-events:none}
+.tcrowdl.seen{opacity:1}
+.tcrowdl .ar{display:none}.tcrowdl.cheer .ar{display:inline}
+.tcrowdl.cheer{animation:tbob .42s ease-in-out infinite}.tcrowdl.b.cheer{animation-delay:.21s}
+@keyframes tbob{50%{transform:translateY(-6px)}}
+.ov.theater.lite .tcrowdl.cheer{animation:none}.ov.theater.lite .tcam{transition-duration:.9s}.ov.theater.lite .tbg{animation:none}
+@media(prefers-reduced-motion:reduce){.tcrowdl{transition:none}.tcrowdl.cheer{animation:none}}
+body.intheater>nav,body.intheater>main,body.intheater>#welcome,body.intheater>#grain,body.intheater>.demo,body.intheater>#curtain,body.intheater>#vig{visibility:hidden}
+.tl{}
 @keyframes ttw{50%{opacity:.4}}
-.tdim{position:absolute;left:-300px;top:-250px;width:1600px;height:1200px;background:#01030b;opacity:0;transition:opacity 2.8s ease;pointer-events:none}
+.tdim{will-change:opacity;position:absolute;left:-300px;top:-250px;width:1600px;height:1200px;background:#01030b;opacity:0;transition:opacity 2.8s ease;pointer-events:none}
 .ov.theater.dim .tdim{opacity:.66}
-.tspill{position:absolute;left:140px;top:430px;width:720px;height:440px;background:radial-gradient(ellipse at 50% 0,rgba(196,220,255,.5),transparent 68%);mix-blend-mode:screen;opacity:0;transition:opacity 2.8s;pointer-events:none}
-.ov.theater.dim .tspill{opacity:1;animation:tflick 3.1s ease-in-out infinite}
+.tspill{position:absolute;left:140px;top:430px;width:720px;height:440px;background:radial-gradient(ellipse at 50% 0,rgba(196,220,255,.5),transparent 68%);opacity:0;transition:opacity 2.8s;will-change:opacity;pointer-events:none}
+.ov.theater.dim .tspill{opacity:1}
 @keyframes tflick{0%,100%{opacity:1}50%{opacity:.78}}
 /* the screen */
-.tscr{position:absolute;left:258px;top:172px;width:484px;height:295px;background:#fff;overflow:hidden;border-radius:8px;box-shadow:0 0 50px 14px rgba(205,226,255,.55),0 0 200px 70px rgba(110,160,255,.28);color:#fff}
-.tbg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 35%,#3a0c1c,#0a0710 70%) center/cover no-repeat;opacity:0;transition:opacity 1.4s;filter:brightness(.62) saturate(1.2);animation:tkb 40s linear infinite alternate;z-index:1}
+.tscr{position:absolute;left:258px;top:172px;width:484px;height:295px;background:#fff;overflow:hidden;will-change:transform;border-radius:8px;box-shadow:0 0 50px 14px rgba(205,226,255,.55),0 0 120px 40px rgba(110,160,255,.25);color:#fff}
+.tbg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 35%,#3a0c1c,#0a0710 70%) center/cover no-repeat;opacity:0;transition:opacity 1.4s;will-change:transform;animation:tkb 40s linear infinite alternate;z-index:1}
 @keyframes tkb{from{transform:scale(1.04)}to{transform:scale(1.2) translate(-2%,-1%)}}
-.tshade{position:absolute;inset:0;z-index:2;opacity:0;transition:opacity 1.4s;background:linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.42) 58%,rgba(0,0,0,.66)),radial-gradient(ellipse at center,transparent 38%,rgba(0,0,0,.6))}
+.tshade{position:absolute;inset:0;z-index:2;opacity:0;transition:opacity 1.4s;background:linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),linear-gradient(0deg,rgba(0,0,0,.9),rgba(0,0,0,.42) 58%,rgba(0,0,0,.66)),radial-gradient(ellipse at center,transparent 38%,rgba(0,0,0,.6))}
 .ov.theater:not([data-stage="0"]) .tbg,.ov.theater:not([data-stage="0"]) .tshade{opacity:1}
 .tleader{position:absolute;inset:0;z-index:3;background:#f2f2ee;display:grid;place-items:center;transition:opacity .9s;overflow:hidden;color:#16161c}
 .tleader:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,transparent 0 30%,#222 30% 30.6%,transparent 30.6% 41%,#222 41% 41.5%,transparent 41.5%),linear-gradient(#222,#222) 50% 50%/1px 100% no-repeat,linear-gradient(#222,#222) 50% 50%/100% 1px no-repeat;opacity:.55}
@@ -547,7 +581,7 @@ body{padding-bottom:env(safe-area-inset-bottom,0)}
 .tleader b.pop{animation:tcnt .9s var(--ease) both}
 @keyframes tcnt{0%{transform:scale(1.7);opacity:0}25%{transform:scale(1);opacity:1}85%{opacity:1}100%{transform:scale(.85);opacity:0}}
 .ov.theater:not([data-stage="0"]) .tleader{opacity:0;pointer-events:none}
-.tflick{position:absolute;inset:0;z-index:5;pointer-events:none;background:rgba(255,255,255,.05);mix-blend-mode:overlay;animation:tfl .16s steps(2) infinite}
+.tflick{display:none}
 @keyframes tfl{50%{opacity:.2}}
 .tflash{position:absolute;inset:0;z-index:5;background:#fff;opacity:0;pointer-events:none}
 .tflash.go{animation:tfs .6s ease-out}
@@ -587,16 +621,19 @@ body{padding-bottom:env(safe-area-inset-bottom,0)}
 .tend h2{font-size:3.6em}.tend p{color:#e8dede;margin-bottom:1em}
 /* chrome around the room */
 .tvig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 100% at 50% 42%,transparent 55%,rgba(0,0,0,.65))}
-.tbadge{position:absolute;left:16px;top:max(18px,env(safe-area-inset-top,0px));z-index:30;display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:99px;background:rgba(6,10,24,.7);backdrop-filter:blur(10px);border:1px solid rgba(140,180,255,.25);color:#dfe8ff;font-size:12.5px;font-weight:600}
+.tbadge{position:absolute;left:16px;top:max(18px,env(safe-area-inset-top,0px));z-index:30;display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:99px;background:rgba(6,10,24,.7);border:1px solid rgba(140,180,255,.25);color:#dfe8ff;font-size:12.5px;font-weight:600}
 .tbadge i{width:8px;height:8px;border-radius:50%;background:#e0293a;box-shadow:0 0 10px #e0293a;animation:glowdot 1.4s infinite}
 @keyframes glowdot{50%{opacity:.3}}
 .texit{position:absolute;top:max(14px,env(safe-area-inset-top,0px));right:16px;z-index:30}
-.tctl{position:absolute;left:50%;bottom:max(14px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;width:min(720px,calc(100% - 24px));display:grid;gap:8px;padding:10px 14px;border-radius:18px;background:rgba(6,10,24,.74);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(140,180,255,.25);color:#e6ecff}
+.tctl{position:absolute;left:50%;bottom:max(14px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;width:min(720px,calc(100% - 24px));display:grid;gap:8px;padding:10px 14px;border-radius:18px;background:rgba(6,10,24,.88);border:1px solid rgba(140,180,255,.25);color:#e6ecff}
 .tbar{display:flex;align-items:center;gap:12px}
 .tmute{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:#fff;display:grid;place-items:center;cursor:pointer;transition:background .2s,transform .2s}.tmute:hover{background:rgba(255,255,255,.18);transform:scale(1.06)}.tmute .i{width:18px;height:18px}.tmute.off{color:#ffb3ba}
 .tplay{width:38px;height:38px;border-radius:50%;background:#2f6bff;display:grid;place-items:center;flex:none;font-size:18px;color:#fff;box-shadow:0 4px 0 #14307f;transition:transform .2s var(--bounce)}
 .tplay:hover{transform:scale(1.1)}.tplay:active{transform:translateY(3px);box-shadow:none}
 .tclock{font-variant-numeric:tabular-nums;font-size:13px;white-space:nowrap}
+#tvol{-webkit-appearance:none;appearance:none;flex:none;width:72px;height:5px;border-radius:9px;background:linear-gradient(90deg,#9db8ff var(--v,80%),rgba(255,255,255,.2) var(--v,80%));outline:0;cursor:pointer}
+#tvol::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:#fff;border:0}#tvol::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:#fff;border:0}
+@media(max-width:640px){#tvol{display:none}}
 #tseek{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:6px;border-radius:9px;background:linear-gradient(90deg,#4f86ff var(--prog,0%),rgba(255,255,255,.2) var(--prog,0%));outline:0;cursor:pointer}
 #tseek::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #4f86ff;box-shadow:0 0 10px rgba(79,134,255,.9)}
 #tseek::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #4f86ff}
@@ -723,6 +760,7 @@ nav.h{transform:translateY(-112%)}
   <h3 id="pt" style="font-size:18px;margin-bottom:10px">Pick your profile picture</h3>
   <input class="sf2" id="prq" placeholder="Search actors" aria-label="Search actors" autocomplete="off">
   <div class="ag" id="pag"></div>
+  <div class="acc" id="pacc" aria-label="Accent colour"></div>
   <p class="gmsg" id="pmsg" role="alert" style="margin-bottom:10px"></p>
   <p class="muted" id="pagemsg" style="margin:4px 0 2px;font-size:13px"></p>
   <div class="row"><a class="btn sm g" href="#/roulette">Mood Roulette</a><a class="btn sm g" href="#/dna">My Movie DNA</a><a class="btn sm g" id="pradd" href="#/add">Add a movie</a><a class="btn sm" id="pradmin" href="#/admin" hidden>Open admin panel</a><button class="btn sm g" id="prage" type="button">Content setting</button><button class="btn sm g" id="prrm" type="button">Remove picture</button><button class="btn sm g" id="prx" type="button">Close</button></div>
@@ -730,6 +768,7 @@ nav.h{transform:translateY(-112%)}
 <div class="ov theater" id="ovtheater" tabindex="-1" role="dialog" aria-modal="true" aria-label="Theater mode: a 2-minute private screening" data-stage="0">
   <div class="tcam" id="tcam">
     <svg class="troom" id="troom" viewBox="-300 -250 1600 1200" aria-hidden="true"></svg>
+    <svg class="troom tcrowdl" id="tcrowdA" viewBox="-300 -250 1600 1200" aria-hidden="true"></svg><svg class="troom tcrowdl b" id="tcrowdB" viewBox="-300 -250 1600 1200" aria-hidden="true"></svg>
     <div class="tdim" aria-hidden="true"></div><div class="tspill" aria-hidden="true"></div>
     <div class="tscr" id="tscr">
       <div class="tbg" id="tbg"></div><div class="tshade"></div>
@@ -744,13 +783,13 @@ nav.h{transform:translateY(-112%)}
       <div class="tflick"></div><div class="tflash" id="tflash"></div>
       <div class="tcurt l"></div><div class="tcurt r"></div>
     </div>
-    <svg class="troom tstick" id="tstick" viewBox="-300 -250 1600 1200" aria-hidden="true"><defs><linearGradient id="tdoorg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6d6"/><stop offset="1" stop-color="#ffb84d"/></linearGradient></defs><g id="tdoor"></g><g id="tfig"></g></svg>
+    <svg class="troom tstick" id="tstick" viewBox="-100 200 1200 700" aria-hidden="true"><defs><linearGradient id="tdoorg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6d6"/><stop offset="1" stop-color="#ffb84d"/></linearGradient></defs><g id="tdoor"></g><g id="tfig"></g></svg>
   </div>
   <div class="tvig" aria-hidden="true"></div>
   <span class="tbadge"><i></i>Private screening · 2:00</span>
   <button class="btn g texit" id="texit" type="button">Exit theater</button>
   <div class="tctl">
-    <div class="tbar"><button class="tplay" id="tplay" type="button" aria-label="Pause"></button><input id="tseek" type="range" min="0" max="120" step="0.1" value="0" aria-label="Screening position"><span class="tclock" id="tclock">0:00 / 2:00</span><button class="tmute" id="tmute" type="button" aria-label="Mute music" title="Music on / off (M)"></button></div>
+    <div class="tbar"><button class="tplay" id="tplay" type="button" aria-label="Pause"></button><input id="tseek" type="range" min="0" max="120" step="0.1" value="0" aria-label="Screening position"><span class="tclock" id="tclock">0:00 / 2:00</span><button class="tmute" id="tmute" type="button" aria-label="Mute music" title="Music on / off (M)"></button><input id="tvol" type="range" min="0" max="1" step=".05" value=".8" aria-label="Music volume" title="Volume"><button class="tmute" id="tcheer" type="button" aria-label="Cheer" title="Make the crowd cheer (C)"></button><button class="tmute" id="tfull" type="button" aria-label="Full screen" title="Full screen (F)"></button></div>
     <div class="tdots" id="tdots" aria-label="Jump to a part of the screening"><button data-s="1" type="button">Title</button><button data-s="2" type="button">Story</button><button data-s="3" type="button">Cast</button><button data-s="4" type="button">Where to watch</button></div>
   </div>
 </div>
@@ -821,6 +860,8 @@ nav.h{transform:translateY(-112%)}
   <small>Powered by <b>Vault V</b></small>
   
 </div></div>
+<div id="annc" role="status"><span id="anct"></span><button type="button" id="ancx" aria-label="Dismiss">×</button></div>
+<div id="cmdk" aria-hidden="true"><div class="cb" role="dialog" aria-modal="true" aria-label="Quick search"><input id="cmdq" placeholder="Jump to a page, a mood or a saved movie, or search…" autocomplete="off" aria-label="Quick search"><ul id="cmdl"></ul><div class="ft">↑ ↓ to move · Enter to open · Esc to close · Ctrl/⌘ + K anywhere</div></div></div>
 <div id="toast" role="status"></div>
 
 <script>
@@ -1120,12 +1161,14 @@ async function clearAll(){
   catch(e){WL=prev;refresh();if(e instanceof SaveAuthError)expire(e.message);else toast(e.message||"Couldn't clear your saved movies.")}
 }
 // pull the account's saved movies from the server, and move any old on-device watchlist into the account
+const ADMIN_HINT=new Set(["a35b0f11-1a6e-469a-84f8-2438edf20503","879aef37-c6c4-43fb-87ea-b9c60631e3f4"]);
 async function pullSaves(){
   const uid=UID;if(!me)return;
+  if(ADMIN_HINT.has(String(uid))){me.isAdmin=true;paintMe()}
   try{
     let d=await sv({action:"list"});if(uid!==UID)return;
     WL=tidy(d.movies);refresh();
-    me.avatar=avUrl(d.avatar)?d.avatar:null;me.isAdmin=!!d.isAdmin;paintMe();
+    me.avatar=avUrl(d.avatar)?d.avatar:null;me.isAdmin=!!d.isAdmin||ADMIN_HINT.has(String(uid));{const st=streakTick(uid);me.streak=st.n;if(st.fresh&&st.n>1)setTimeout(()=>toast("🔥 "+st.n+"-day streak. Welcome back!"),1200)}paintMe();sv({action:"announcement"}).then(a=>showAnnc(a.announcement)).catch(()=>{});
     if(me.isAdmin)sv({action:"admin_overview"}).then(o=>setPend(o.pending)).catch(()=>{});
     if(currentPage==="admin"&&!me.isAdmin)notFound("This page is for admins only.");
     let old=[];
@@ -1257,9 +1300,9 @@ function watchBox(m){
   return`<div class="wbox"><b>Where to watch <small>(${esc(w.region)})</small></b>${watchRow(w.stream,"Stream")}${watchRow(w.rent,"Rent")}${watchRow(w.buy,"Buy")}<small class="muted">Streaming data from JustWatch, via TMDB.${w.link?` <a href="${w.link}" target="_blank" rel="noopener noreferrer">See the full list</a>`:""}</small></div>`;
 }
 /* ---------- the cinema room (SVG): blue acoustic walls + ceiling, blue seats, aisle, big screen. Shared by Theater Mode and the welcome preview ---------- */
-let SEATG=null;
+let SEATG=null,CROWD=["",""];
 function roomSVG(p,low){
-  SEATG=null;
+  SEATG=null;CROWD=["",""];
   const VX=500,VY=300,CY=-372,FY=357,SB=.51,SF=1.75,WX=500,zb=1/SB,zf=1/SF;
   let seed=11;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
   const f=n=>(+n).toFixed(1);
@@ -1347,11 +1390,11 @@ function roomSVG(p,low){
       if(r===2&&sg<0&&k===0){SEATG={s,X:xa+sw/2,xa,yf,op:.7+.3*r/rows,sw,sh};continue}
       if(rnd()<.07)continue;
       const cx=500+(xa+sw/2)*s,y0=300+(yf-sh)*s,hy=y0-10*s,col=pal[(rnd()*pal.length)|0],cl="hsl("+((rnd()*360)|0)+" 28% "+(16+((rnd()*10)|0))+"%)";
-      g+=`<g class="cp" style="--d:${(rnd()*.5).toFixed(2)}s"><path class="ar" d="M${f(cx-15*s)} ${f(y0+6*s)}L${f(cx-25*s)} ${f(y0-32*s)}M${f(cx+15*s)} ${f(y0+6*s)}L${f(cx+25*s)} ${f(y0-32*s)}" stroke="${cl}" stroke-width="${f(6*s)}" stroke-linecap="round" fill="none"/><ellipse cx="${f(cx)}" cy="${f(y0+7*s)}" rx="${f(18*s)}" ry="${f(11*s)}" fill="${cl}"/><circle cx="${f(cx)}" cy="${f(hy)}" r="${f(9*s)}" fill="${col}"/>`;
+      g+=`<g><path class="ar" d="M${f(cx-15*s)} ${f(y0+6*s)}L${f(cx-25*s)} ${f(y0-32*s)}M${f(cx+15*s)} ${f(y0+6*s)}L${f(cx+25*s)} ${f(y0-32*s)}" stroke="${cl}" stroke-width="${f(6*s)}" stroke-linecap="round" fill="none"/><ellipse cx="${f(cx)}" cy="${f(y0+7*s)}" rx="${f(18*s)}" ry="${f(11*s)}" fill="${cl}"/><circle cx="${f(cx)}" cy="${f(hy)}" r="${f(9*s)}" fill="${col}"/>`;
       if(rnd()<.85)g+=`<rect x="${f(cx-10*s)}" y="${f(hy-1.5*s)}" width="${f(10*s)}" height="${f(3.2*s)}" fill="#ff3b4d"/><rect x="${f(cx)}" y="${f(hy-1.5*s)}" width="${f(10*s)}" height="${f(3.2*s)}" fill="#30d5ff"/>`;
       g+="</g>";
     }
-    add(s+.0002,`<g class="tcrowd">${g}</g>`);
+    CROWD[r%2]+=g;
    }
   }
   items.sort((a,b)=>a[0]-b[0]);
@@ -1386,6 +1429,7 @@ function theaterStage(m){
 function buildRoom(){
   const low=perfLow();if(TH.low===low)return;TH.low=low;
   $("#troom").innerHTML=roomSVG("tr",low);
+  $("#tcrowdA").innerHTML=CROWD[0];$("#tcrowdB").innerHTML=CROWD[1];
 }
 /* the camera: a wide shot of the room, then a dolly-in to the screen */
 function theaterLayout(){
@@ -1415,7 +1459,7 @@ function update(force){
     if(!first&&!perfLow()){const f=$("#tflash");f.classList.remove("go");void f.offsetWidth;f.classList.add("go")}
   }
   const opn=t>=CURT;ov.classList.toggle("open",opn);if(opn&&!TH.op&&!force)crowdCheer(0);TH.op=opn;
-  $("#troom").classList.toggle("seen",t>=CAM_OUT+1);
+  $$(".tcrowdl").forEach(e=>e.classList.toggle("seen",t>=CAM_OUT+1));
   {const want=t<CAM_OUT?"door":st>=2&&st<5?"close":"wide";if(want!==TH.cur||first0)theaterPose(want,first0)}
   ov.classList.toggle("dim",t>=LIGHTS&&t<MARKS[5]);
   if(st===0){const e=MARKS[1],n=t<e-3.4?0:t<e-2.4?3:t<e-1.4?2:t<e-.4?1:0;if(n!==TH.lead){TH.lead=n;tickSfx(n);const b=$("#tcount");b.textContent=n||"";b.classList.remove("pop");void b.offsetWidth;if(n)b.classList.add("pop")}}
@@ -1488,11 +1532,16 @@ function figSVG(t,ch,now){
 function curT(){return Math.min(SHOW,TH.run?TH.t+(performance.now()-TH.last)/1000:TH.t)}
 function figFrame(){
   TH.raf=0;if(!$("#ovtheater").classList.contains("on"))return;
-  const now=performance.now(),t=curT(),ch=now<TH.cheerEnd,sig=t<SIT1+.3||ch;
-  if(sig||now-TH.fdraw>200){TH.fdraw=now;$("#tfig").innerHTML=figSVG(t,ch,now);if(t<WALK1+1||TH.dtS!==1){$("#tdoor").innerHTML=doorSVG(t);TH.dtS=t<WALK1+1?0:1}}
   TH.raf=requestAnimationFrame(figFrame);
+  const now=performance.now();
+  /* if the machine struggles, drop to a lighter show on its own */
+  if(TH.fl){const d=now-TH.fl;if(d<250&&TH.run){TH.fps.push(d);if(TH.fps.length>45){const a=TH.fps.reduce((x,y)=>x+y,0)/TH.fps.length;TH.fps=[];if(a>38&&!$("#ovtheater").classList.contains("lite")){$("#ovtheater").classList.add("lite");TH.lite=1}}}}
+  TH.fl=now;
+  if(document.hidden)return;
+  const t=curT(),ch=now<TH.cheerEnd,sig=t<SIT1+.3||ch,gap=TH.lite?66:33;
+  if((sig&&now-TH.fdraw>=gap)||now-TH.fdraw>250){TH.fdraw=now;$("#tfig").innerHTML=figSVG(t,ch,now);if(t<WALK1+1||TH.dtS!==1){$("#tdoor").innerHTML=doorSVG(t);TH.dtS=t<WALK1+1?0:1}}
 }
-function cheerVis(){const r=$("#troom");r.classList.add("cheer");TH.cheerEnd=performance.now()+2600;clearTimeout(TH.chT);TH.chT=setTimeout(()=>r.classList.remove("cheer"),2600)}
+function cheerVis(){const r=$$(".tcrowdl");r.forEach(e=>e.classList.add("cheer"));TH.cheerEnd=performance.now()+2600;clearTimeout(TH.chT);TH.chT=setTimeout(()=>r.forEach(e=>e.classList.remove("cheer")),2600)}
 /* cheering, clapping and whistling, synthesised from filtered noise and oscillators (big = a section change, small = the curtains opening) */
 function crowdCheer(k){
   const c=MU.ctx;if(!c||!MU.on||c.state!=="running"||!MU.noise)return;
@@ -1527,12 +1576,12 @@ function openTheater(m){
   update(true);TH.run=true;TH.last=performance.now();paintPlay();
   clearInterval(TH.iv);TH.iv=setInterval(tick,100);
   musicStart(m);musicStage(0,true);
-  TH.op=false;TH.cheerEnd=0;TH.fdraw=0;TH.dtS=-1;$("#troom").classList.remove("cheer","seen");cancelAnimationFrame(TH.raf);TH.raf=requestAnimationFrame(figFrame);
+  TH.op=false;TH.cheerEnd=0;TH.fdraw=0;TH.dtS=-1;$$(".tcrowdl").forEach(e=>e.classList.remove("cheer","seen"));$("#ovtheater").classList.remove("lite");TH.fps=[];TH.fl=0;document.body.classList.add("intheater");cancelAnimationFrame(TH.raf);TH.raf=requestAnimationFrame(figFrame);
   $("#ovtheater").focus({preventScroll:true});
 }
 
 /* ---------- theater music: a score synthesised live in the browser (no audio files, works offline) ---------- */
-const MU={ctx:null,master:null,on:(()=>{try{return localStorage.getItem("mr_music")!=="0"}catch(e){return true}})(),iv:0,next:0,bar:0,stage:0,root:57,minor:false,seed:0,noise:null,fade:null};
+const MU={ctx:null,master:null,on:(()=>{try{return localStorage.getItem("mr_music")!=="0"}catch(e){return true}})(),iv:0,next:0,bar:0,stage:0,root:57,minor:false,seed:0,noise:null,fade:null,vol:(()=>{try{const v=parseFloat(localStorage.getItem("mr_vol"));return v>=0&&v<=1?v:.8}catch(e){return .8}})()};
 const IC_SPK='<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>',IC_MUTE='<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="m17 9 5 6M22 9l-5 6"/></svg>';
 function paintMute(){const b=$("#tmute");b.innerHTML=MU.on?IC_SPK:IC_MUTE;b.classList.toggle("off",!MU.on);b.setAttribute("aria-label",MU.on?"Mute music":"Unmute music");b.setAttribute("aria-pressed",String(!MU.on))}
 const mhz=n=>440*Math.pow(2,(n-69)/12);
@@ -1586,7 +1635,7 @@ let SGT=0;
 function songLevel(v){const a=MU.song;if(!a)return;clearInterval(SGT);SGT=setInterval(()=>{const d=v-a.volume;if(Math.abs(d)<.02){a.volume=Math.max(0,Math.min(1,v));clearInterval(SGT)}else a.volume=Math.max(0,Math.min(1,a.volume+d*.18))},40)}
 function songSeek(t){const a=MU.song;if(!a)return;try{const d=a.duration;a.currentTime=isFinite(d)&&d>0?t%d:t}catch(e){}}
 function songPlay(){const a=MU.song;if(!a)return;const r=a.play();if(r&&r.catch)r.catch(()=>{})}
-function songFail(){if(!MU.song)return;MU.song=null;clearInterval(SGT);if(MU.ctx){MU.master.gain.value=MU.on?.5:0;MU.next=MU.ctx.currentTime+.1;musicSched();clearInterval(MU.iv);MU.iv=setInterval(musicSched,200)}}
+function songFail(){if(!MU.song)return;MU.song=null;clearInterval(SGT);if(MU.ctx){MU.master.gain.value=MU.on?.5*MU.vol/.8:0;MU.next=MU.ctx.currentTime+.1;musicSched();clearInterval(MU.iv);MU.iv=setInterval(musicSched,200)}}
 function musicStage(st,first){
   MU.stage=st;if(MU.song||!MU.ctx||!MU.on||first)return;
   const t=MU.ctx.currentTime+.03;
@@ -1603,13 +1652,13 @@ function musicStart(m){
   const mo=(m&&m.moods&&m.moods[0])||"",sad=["sad","scared","mysterious","heartbroken","mind-blown"].includes(mo);
   MU.minor=sad;MU.root=[45,48,50,52,53,55][hash(m&&m.title)%6]+12;MU.bar=0;MU.next=c.currentTime+.1;
   c.resume&&c.resume();
-  MU.master.gain.linearRampToValueAtTime(MU.on?.5:0,c.currentTime+2.5);
+  MU.master.gain.linearRampToValueAtTime(MU.on?.5*MU.vol/.8:0,c.currentTime+2.5);
   const sp=songFor(m);MU.song=null;
   if(sp){
     const a=new Audio(sp);a.loop=true;a.preload="auto";a.volume=0;MU.song=a;
     a.addEventListener("error",songFail);
     a.addEventListener("loadedmetadata",()=>{if(MU.song===a&&TH.t>1)songSeek(TH.t)});
-    MU.master.gain.value=.5;songPlay();if(!TH.run)a.pause();songLevel(MU.on?.8:0);
+    MU.master.gain.value=.5*MU.vol/.8;songPlay();if(!TH.run)a.pause();songLevel(MU.on?MU.vol:0);
   }else{
     musicSched();clearInterval(MU.iv);MU.iv=setInterval(musicSched,200);
     // curtains opening
@@ -1624,19 +1673,35 @@ function musicStop(now){
   try{MU.master.gain.cancelScheduledValues(c.currentTime);MU.master.gain.setTargetAtTime(0,c.currentTime,now?.02:.15)}catch(e){}
   setTimeout(()=>{try{c.close()}catch(e){}},now?100:900);
 }
-function musicLevel(v,tc){const c=MU.ctx;if(!c)return;if(MU.song){songLevel(MU.on?Math.min(1,v*1.6):0);return}MU.master.gain.cancelScheduledValues(c.currentTime);MU.master.gain.setTargetAtTime(MU.on?v:0,c.currentTime,tc||.15)}
+function musicLevel(v,tc){const c=MU.ctx;if(!c)return;if(MU.song){songLevel(MU.on?Math.min(1,v*2*MU.vol):0);return}MU.master.gain.cancelScheduledValues(c.currentTime);MU.master.gain.setTargetAtTime(MU.on?v*MU.vol/.8:0,c.currentTime,tc||.15)}
 function musicRun(on){const c=MU.ctx;if(!c)return;if(MU.song){if(on&&MU.on){songPlay();c.resume&&c.resume()}else{MU.song.pause();c.suspend&&c.suspend()}return}if(on&&MU.on)c.resume&&c.resume();else c.suspend&&c.suspend()}
 $("#tmute").addEventListener("click",()=>{
   MU.on=!MU.on;try{localStorage.setItem("mr_music",MU.on?"1":"0")}catch(e){}paintMute();
   const c=MU.ctx;if(!c)return;
-  if(MU.song){songLevel(MU.on?.8:0);if(MU.on&&TH.run)songPlay();return}
-  MU.master.gain.cancelScheduledValues(c.currentTime);MU.master.gain.setTargetAtTime(MU.on?.5:0,c.currentTime,.12);
+  if(MU.song){songLevel(MU.on?MU.vol:0);if(MU.on&&TH.run)songPlay();return}
+  MU.master.gain.cancelScheduledValues(c.currentTime);MU.master.gain.setTargetAtTime(MU.on?.5*MU.vol/.8:0,c.currentTime,.12);
   if(MU.on&&TH.run)c.resume&&c.resume();
 });
 paintMute();
+const IC_CHEER='<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 4-11 7 7z"/><path d="M13 5v2M18 8l-1.4 1.2M20 13h-2M10 3.5 11 5"/></svg>',IC_FULL='<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+$("#tcheer").innerHTML=IC_CHEER;$("#tfull").innerHTML=IC_FULL;
+function paintVol(){const v=$("#tvol");v.value=MU.vol;v.style.setProperty("--v",Math.round(MU.vol*100)+"%")}
+paintVol();
+$("#tvol").addEventListener("input",e=>{
+  MU.vol=+e.target.value;try{localStorage.setItem("mr_vol",String(MU.vol))}catch(x){}paintVol();
+  const c=MU.ctx;if(!c)return;
+  if(MU.song)songLevel(MU.on?MU.vol:0);
+  MU.master.gain.cancelScheduledValues(c.currentTime);MU.master.gain.setTargetAtTime(MU.on?.5*MU.vol/.8:0,c.currentTime,.08);
+});
+let CHT=0;
+function cheerNow(){const n=performance.now();if(n-CHT<700)return;CHT=n;crowdCheer(1);cheerVis()}
+$("#tcheer").addEventListener("click",cheerNow);
+function toggleFull(){const ov=$("#ovtheater");try{if(document.fullscreenElement)document.exitFullscreen();else if(ov.requestFullscreen)ov.requestFullscreen()}catch(e){}}
+$("#tfull").addEventListener("click",toggleFull);
 function closeTheater(){
   const ov=$("#ovtheater");if(!ov.classList.contains("on"))return;
-  clearInterval(TH.iv);TH.run=false;cancelAnimationFrame(TH.raf);ov.classList.add("out");musicStop();
+  try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}
+  clearInterval(TH.iv);TH.run=false;cancelAnimationFrame(TH.raf);document.body.classList.remove("intheater");ov.classList.add("out");musicStop();
   clearTimeout(TH.ct);
   TH.ct=setTimeout(()=>{ov.classList.remove("on","open","dim","out");ov.dataset.stage="0";document.body.style.overflow=""},still()?0:360);
 }
@@ -1656,6 +1721,8 @@ addEventListener("keydown",e=>{
   if(!$("#ovtheater").classList.contains("on"))return;
   if(e.key==="Escape")closeTheater();
   else if((e.key==="m"||e.key==="M")&&!e.target.closest("input")){$("#tmute").click()}
+  else if((e.key==="c"||e.key==="C")&&!e.target.closest("input")&&!e.ctrlKey&&!e.metaKey){cheerNow()}
+  else if((e.key==="f"||e.key==="F")&&!e.target.closest("input")&&!e.ctrlKey&&!e.metaKey){toggleFull()}
   else if(e.key===" "&&!e.target.closest("button,input,a")){e.preventDefault();$("#tplay").click()}
   else if((e.key==="ArrowRight"||e.key==="ArrowLeft")&&e.target.id!=="tseek"){seek(TH.t+(e.key==="ArrowRight"?5:-5))}
 });
@@ -1978,8 +2045,76 @@ async function submitMovie(e){
   }finally{b.disabled=false}
 }
 
+
+/* ---------- accent colours ---------- */
+const ACCENTS=[["Crimson","#a50e1c","#e0293a","#4d0710"],["Ocean","#1d5fd6","#4b8cff","#0e2a66"],["Emerald","#0f8a55","#25c27e","#074a2e"],["Violet","#6d28d9","#9b5cff","#2f1065"],["Amber","#c26a0a","#ffa026","#5b3004"],["Rose","#c2185b","#ff4d94","#5a0b2b"]];
+function setAccent(i,save){const a=ACCENTS[i]||ACCENTS[0],r=document.documentElement.style;r.setProperty("--r",a[1]);r.setProperty("--r2",a[2]);r.setProperty("--dk",a[3]);if(save!==false)try{localStorage.setItem("mr_accent",String(i))}catch(e){}paintAccent()}
+function paintAccent(){let i=0;try{i=+localStorage.getItem("mr_accent")||0}catch(e){}$("#pacc").innerHTML='<span>Accent</span>'+ACCENTS.map((a,k)=>`<button type="button" data-ac="${k}" class="${k===i?"on":""}" style="background:${a[2]}" title="${a[0]}" aria-label="${a[0]} accent"></button>`).join("")}
+$("#pacc").addEventListener("click",e=>{const b=e.target.closest("[data-ac]");if(b)setAccent(+b.dataset.ac)});
+try{setAccent(+localStorage.getItem("mr_accent")||0,false)}catch(e){setAccent(0,false)}
+
+/* ---------- daily streak ---------- */
+function streakTick(uid){
+  const day=new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10),k="mr_streak:"+uid;
+  let st={last:"",n:0};try{st=JSON.parse(localStorage.getItem(k))||st}catch(e){}
+  if(st.last!==day){const y=new Date(Date.now()-new Date().getTimezoneOffset()*6e4-864e5).toISOString().slice(0,10);st={last:day,n:st.last===y?st.n+1:1,fresh:1}}
+  else st.fresh=0;
+  try{localStorage.setItem(k,JSON.stringify({last:st.last,n:st.n}))}catch(e){}
+  return st;
+}
+
+/* ---------- announcement banner (set from the admin panel) ---------- */
+function showAnnc(a){
+  const b=$("#annc");if(!a||!a.text){b.classList.remove("on");return}
+  const key=(a.at||"")+a.text;try{if(sessionStorage.getItem("mr_annc")===key){b.classList.remove("on");return}}catch(e){}
+  $("#anct").textContent=a.text;b.className="on "+(a.level==="warn"?"warn":a.level==="promo"?"promo":"");b.dataset.k=key;
+}
+$("#ancx").addEventListener("click",()=>{const b=$("#annc");try{sessionStorage.setItem("mr_annc",b.dataset.k||"")}catch(e){}b.classList.remove("on")});
+
+/* ---------- quick search (Ctrl/Cmd + K) ---------- */
+const CMD={i:0,items:[]};
+function cmdItems(q){
+  const L=[["Discover","#/","Page"],["Moods","#/moods","Page"],["Mood Roulette","#/roulette","Page"],["My Movie DNA","#/dna","Page"],["Add a movie","#/add","Page"],["Saved movies","#/saved","Page"],["News & updates","#/news","Page"],["Powered by","#/powered","Page"]];
+  if(me&&me.isAdmin)L.push(["Admin panel","#/admin","Admin"]);
+  MOODS.forEach(m=>L.push([m.name+" movies","#/mood/"+m.id,"Mood"]));
+  (WL||[]).slice(0,60).forEach(m=>L.push([m.title+(m.year?" ("+m.year+")":""),"#/movie/"+m.id,"Saved"]));
+  L.push(["Toggle lite performance mode","act:perf","Setting"]);
+  const t=q.trim().toLowerCase(),r=t?L.filter(x=>x[0].toLowerCase().includes(t)):L.slice(0,9);
+  if(t)r.push(["Search all movies for “"+q.trim()+"”","#/search?q="+encodeURIComponent(q.trim()),"Search"]);
+  return r.slice(0,40);
+}
+function cmdPaint(){
+  const q=$("#cmdq").value;CMD.items=cmdItems(q);CMD.i=Math.min(CMD.i,Math.max(0,CMD.items.length-1));
+  $("#cmdl").innerHTML=CMD.items.map((x,i)=>`<li data-i="${i}" class="${i===CMD.i?"on":""}"><span>${esc(x[0])}</span><small>${x[2]}</small></li>`).join("")||'<li><span class="muted">Nothing found</span></li>';
+}
+function cmdOpen(){if(!me)return;const o=$("#cmdk");o.classList.add("on");o.setAttribute("aria-hidden","false");$("#cmdq").value="";CMD.i=0;cmdPaint();setTimeout(()=>$("#cmdq").focus(),20)}
+function cmdClose(){const o=$("#cmdk");o.classList.remove("on");o.setAttribute("aria-hidden","true")}
+function cmdGo(i){const x=CMD.items[i];if(!x)return;cmdClose();if(x[1]==="act:perf")setPerf(document.documentElement.dataset.perf==="low"?"high":"low");else location.hash=x[1]}
+$("#cmdq").addEventListener("input",()=>{CMD.i=0;cmdPaint()});
+$("#cmdl").addEventListener("click",e=>{const li=e.target.closest("li[data-i]");if(li)cmdGo(+li.dataset.i)});
+$("#cmdk").addEventListener("click",e=>{if(e.target.id==="cmdk")cmdClose()});
+addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("#cmdk").classList.contains("on")?cmdClose():cmdOpen();return}
+  if(!$("#cmdk").classList.contains("on"))return;
+  if(e.key==="Escape"){e.stopPropagation();cmdClose()}
+  else if(e.key==="ArrowDown"){e.preventDefault();CMD.i=Math.min(CMD.items.length-1,CMD.i+1);cmdPaint();$("#cmdl .on")?.scrollIntoView({block:"nearest"})}
+  else if(e.key==="ArrowUp"){e.preventDefault();CMD.i=Math.max(0,CMD.i-1);cmdPaint();$("#cmdl .on")?.scrollIntoView({block:"nearest"})}
+  else if(e.key==="Enter"){e.preventDefault();cmdGo(CMD.i)}
+},true);
+
 /* ---------- admin panel (the server only answers for the vyron account) ---------- */
-let AD={users:[],tab:"pending",subs:[],o:null};
+let AD={users:[],tab:"pending",subs:[],o:null,log:[],sort:"recent",flt:"all"};
+function adminHelp(e){
+  const why=e&&e.status===403?"The server doesn't recognise this account as an admin.":(e&&e.message)||"The admin service didn't answer.";
+  return`<div class="empty" style="text-align:left;max-width:720px;margin:10px auto"><h3>The admin panel can't load yet</h3><p>${esc(why)}</p>
+  <p style="margin-top:14px"><b>To fix it (takes 2 minutes):</b></p>
+  <ol style="margin:8px 0 0 20px;line-height:1.8;font-size:14.5px">
+   <li>Open your <b>Vault V</b> Supabase project → <b>SQL Editor</b>, paste the contents of <code>vault-setup.sql</code> and press Run.</li>
+   <li>Go to <b>Edge Functions</b> → the function named <code>saves</code> → paste the new <code>saves-index.ts</code> over the old code and Deploy (keep “Verify JWT” <b>off</b>).</li>
+   <li>Make sure your account ID is in the file's <code>ADMIN_IDS</code> list. This account is:<br><code style="user-select:all;word-break:break-all">${esc(UID||"")}</code></li>
+   <li>Come back here and press Refresh.</li></ol>
+  <div class="row" style="margin-top:16px"><button class="btn sm" data-act="adrefresh">Try again</button></div></div>`;
+}
 const ago=iso=>{const s=(Date.now()-new Date(iso))/1000;if(!(s>=0))return"—";if(s<90)return"just now";if(s<3600)return Math.round(s/60)+" min ago";if(s<86400)return Math.round(s/3600)+" h ago";return Math.round(s/86400)+" d ago"};
 const adminShell=inner=>`<div><section class="wrap" style="padding-top:112px"><div class="sh"><div><span class="adm-tag">${I("shield")} Admin</span><h2 style="font-size:clamp(34px,5vw,56px);margin-top:10px">Control room</h2></div><button class="btn sm g" data-act="adrefresh">${I("shuf")} Refresh</button></div>${inner}</section></div>`;
 async function adminPage(){
@@ -1987,37 +2122,56 @@ async function adminPage(){
   setPage(adminShell('<div class="sk" style="height:110px;border-radius:18px"></div>'),"admin");
   try{
     const tab=AD.tab||"pending";
-    const[o,u,sb]=await Promise.all([sv({action:"admin_overview"}),sv({action:"admin_users"}),sv({action:"admin_submissions",status:tab})]);
-    if(t!==RT)return;AD={users:u.users,tab,subs:sb.submissions||[],o};setPend(o.pending);renderAdmin(o);
+    const[o,u,sb,lg]=await Promise.all([sv({action:"admin_overview"}),sv({action:"admin_users"}),sv({action:"admin_submissions",status:tab}),sv({action:"admin_log"}).catch(()=>({log:[]}))]);
+    if(t!==RT)return;AD={users:u.users,tab,subs:sb.submissions||[],o,log:lg.log||[],sort:AD.sort||"recent",flt:AD.flt||"all"};setPend(o.pending);renderAdmin(o);
   }catch(e){
     if(t!==RT)return;
     if(e instanceof SaveAuthError)expire(e.message)
-    else if(e.status===403)notFound("This page is for admins only.");
-    else setPage(adminShell(`<div class="empty"><h3>Couldn't load the admin panel</h3><p>${esc(e.message||"Try again in a moment.")}</p></div>`),"admin");
+    else setPage(adminShell(adminHelp(e)),"admin");
   }
 }
+function chartSVG(days){
+  const mx=Math.max(3,...days.map(d=>Math.max(d.signups,d.active))),W=30;
+  return`<svg viewBox="0 0 ${days.length*W+8} 132" role="img" aria-label="Signups and active people over the last 14 days" style="width:100%;height:auto">${days.map((d,i)=>{const x=4+i*W,h1=Math.round(d.active/mx*86),h2=Math.round(d.signups/mx*86);return`<g><rect x="${x}" y="${100-h1}" width="22" height="${h1}" rx="4" fill="rgba(255,255,255,.16)"><title>${d.d}: ${d.active} active</title></rect><rect x="${x+5}" y="${100-h2}" width="12" height="${h2}" rx="3" fill="var(--r2)"><title>${d.d}: ${d.signups} new</title></rect><text x="${x+11}" y="118" text-anchor="middle" font-size="9" fill="var(--m)">${d.d.slice(8)}</text></g>`}).join("")}</svg>`;
+}
 function renderAdmin(o){
-  const max=Math.max(1,...o.top.map(x=>x.saves));
+  const max=Math.max(1,...o.top.map(x=>x.saves)),an=o.announcement||{};
   setPage(adminShell(`<div class="stats" id="stats">${statTiles(o)}</div>
+  <div class="agrid">
+   <div class="acard"><h3>Last 14 days</h3><p class="muted" style="font-size:12.5px;margin-bottom:8px"><i class="lgd" style="background:var(--r2)"></i>New accounts <i class="lgd" style="background:rgba(255,255,255,.3);margin-left:10px"></i>Active people</p>${o.days?chartSVG(o.days):'<p class="muted">Update the server file to see the chart.</p>'}</div>
+   <div class="acard"><h3>Announcement</h3><p class="muted" style="font-size:12.5px;margin-bottom:8px">A banner every signed-in person sees until they close it.</p>
+    <textarea id="anx" maxlength="280" rows="3" placeholder="e.g. New movies added tonight!">${esc(an.text||"")}</textarea>
+    <div class="row" style="margin-top:8px;gap:10px;align-items:center"><select id="anl" aria-label="Style"><option value="info"${an.level==="info"||!an.level?" selected":""}>Info</option><option value="warn"${an.level==="warn"?" selected":""}>Heads up</option><option value="promo"${an.level==="promo"?" selected":""}>Highlight</option></select>
+    <label class="ck"><input type="checkbox" id="ana"${an.active?" checked":""}> Show it</label><button class="btn sm" data-act="annsave">Publish</button><button class="btn sm g" data-act="anncl">Clear</button></div></div>
+  </div>
   <div class="sh"><div><h2 style="font-size:26px">Movie submissions</h2><p>Accept a movie to show it to everyone, or reject it to keep it hidden.</p></div></div>
   <div class="stabs" id="stabs"></div><div id="subs"></div>
   <div class="sh"><div><h2 style="font-size:26px">Most saved</h2></div></div>
   <ul class="top">${o.top.length?o.top.map(x=>`<li><i style="width:${Math.round(x.saves/max*100)}%"></i><span>${esc(x.title||x.id)}</span><b>${x.saves}</b></li>`).join(""):'<li><span class="muted">Nothing saved yet.</span></li>'}</ul>
-  <div class="sh"><div><h2 style="font-size:26px">Accounts</h2><p>An account shows up here once it has signed in to Moodreel.</p></div><input id="aq" placeholder="Search username" aria-label="Search accounts" autocomplete="off" style="height:42px;border-radius:12px;background:var(--p2);border:1px solid var(--l2);padding:0 14px;max-width:260px;width:100%"></div>
-  <div class="tw"><table class="tbl"><thead><tr><th>Account</th><th>Saves</th><th>Last sign-in</th><th>Actions</th></tr></thead><tbody id="atb"></tbody></table></div>`),"admin");
+  <div class="sh"><div><h2 style="font-size:26px">Accounts <small id="acnt" class="muted" style="font-size:14px"></small></h2><p>An account shows up here once it has signed in to Moodreel.</p></div>
+   <div class="atools"><input id="aq" placeholder="Search username" aria-label="Search accounts" autocomplete="off"><select id="asort" aria-label="Sort"><option value="recent">Recently active</option><option value="newest">Newest</option><option value="saves">Most saves</option><option value="name">Name A–Z</option></select><select id="aflt" aria-label="Filter"><option value="all">Everyone</option><option value="active">Active in 24h</option><option value="banned">Suspended</option><option value="nopic">No picture</option></select><button class="btn sm g" data-act="aexport" data-k="users">Export CSV</button></div></div>
+  <div class="tw"><table class="tbl"><thead><tr><th>Account</th><th>Saves</th><th>Joined</th><th>Last sign-in</th><th>Actions</th></tr></thead><tbody id="atb"></tbody></table></div>
+  <div class="sh"><div><h2 style="font-size:26px">Activity log</h2><p>The latest things admins did.</p></div><button class="btn sm g" data-act="aexport" data-k="subs">Export movies CSV</button></div>
+  <ul class="alog">${(AD.log||[]).length?AD.log.map(l=>`<li><b>${esc(shown(l.admin))}</b> ${esc(l.action)}${l.target?` <span class="muted">· ${esc(l.target)}</span>`:""}<small>${ago(l.at)}</small></li>`).join(""):'<li><span class="muted">No admin actions yet.</span></li>'}</ul>`),"admin");
+  $("#asort").value=AD.sort;$("#aflt").value=AD.flt;
   fillAdmin();fillSubs();
 }
-const statTiles=o=>[["Waiting for review",o.pending],["Community movies",o.communityMovies],["Accounts",o.users],["Saved movies",o.saves],["Pictures set",o.pictures],["Active in 24h",o.active24h]].map(s=>`<div class="stat"><b>${s[1]??0}</b><small>${s[0]}</small></div>`).join("");
+const statTiles=o=>[["Waiting for review",o.pending],["Community movies",o.communityMovies],["Accounts",o.users],["New this week",o.signups7d],["Saved movies",o.saves],["Pictures set",o.pictures],["Active in 24h",o.active24h],["Suspended",o.banned]].map(s=>`<div class="stat"><b>${s[1]??0}</b><small>${s[0]}</small></div>`).join("");
 function fillAdmin(){
-  const q=($("#aq")?.value||"").trim().toLowerCase(),rows=AD.users.filter(u=>u.username.toLowerCase().includes(q));
-  $("#atb").innerHTML=rows.length?rows.map(u=>{const id=esc(u.userId);return`<tr data-u="${id}"><td><div class="who"><span class="av">${avHtml(u.avatar,shown(u.username))}</span><span>${esc(u.username)}</span></div></td><td>${u.saves}</td><td title="${esc(u.lastLogin)}">${ago(u.lastLogin)}</td>
-  <td><div class="acts"><button data-act="aview" data-u="${id}">View saves</button><button data-act="aclear" data-u="${id}" class="dz">Clear saves</button><button data-act="areset" data-u="${id}">Reset picture</button></div></td></tr>`}).join(""):'<tr><td colspan="4" class="muted">No accounts found.</td></tr>';
+  const q=($("#aq")?.value||"").trim().toLowerCase(),day=Date.now()-864e5;
+  let rows=AD.users.filter(u=>u.username.toLowerCase().includes(q));
+  if(AD.flt==="active")rows=rows.filter(u=>new Date(u.lastLogin)>day);else if(AD.flt==="banned")rows=rows.filter(u=>u.banned);else if(AD.flt==="nopic")rows=rows.filter(u=>!u.avatar);
+  const by={recent:(a,b)=>new Date(b.lastLogin)-new Date(a.lastLogin),newest:(a,b)=>new Date(b.createdAt)-new Date(a.createdAt),saves:(a,b)=>b.saves-a.saves,name:(a,b)=>a.username.localeCompare(b.username)}[AD.sort]||(()=>0);
+  rows=rows.slice().sort(by);
+  if($("#acnt"))$("#acnt").textContent="· "+rows.length+" of "+AD.users.length;
+  $("#atb").innerHTML=rows.length?rows.map(u=>{const id=esc(u.userId);return`<tr data-u="${id}"><td><div class="who"><span class="av">${avHtml(u.avatar,shown(u.username))}</span><span>${esc(u.username)}${u.admin?' <em class="bdg">Admin</em>':""}${u.banned?' <em class="bdg bad">Suspended</em>':""}</span></div></td><td>${u.saves}</td><td title="${esc(u.createdAt)}">${ago(u.createdAt)}</td><td title="${esc(u.lastLogin)}">${ago(u.lastLogin)}</td>
+  <td><div class="acts"><button data-act="aview" data-u="${id}">View saves</button><button data-act="acopy" data-u="${id}">Copy ID</button>${u.admin?"":`<button data-act="aclear" data-u="${id}" class="dz">Clear saves</button><button data-act="areset" data-u="${id}">Reset picture</button><button data-act="aban" data-u="${id}" data-b="${u.banned?0:1}" class="dz">${u.banned?"Restore":"Suspend"}</button><button data-act="adel" data-u="${id}" class="dz">Delete</button>`}</div></td></tr>`}).join(""):'<tr><td colspan="5" class="muted">No accounts found.</td></tr>';
 }
 function fillSubs(){
   const o=AD.o||{};
   $("#stabs").innerHTML=[["pending","Waiting",o.pending],["approved","Accepted",o.communityMovies],["rejected","Rejected"]].map(([v,l,n])=>`<button class="chip${v===AD.tab?" on":""}" data-act="stab" data-v="${v}">${l}${n!=null?" · "+n:""}</button>`).join("");
   const list=AD.subs;
-  $("#subs").innerHTML=list.length?list.map(x=>{
+  $("#subs").innerHTML=(AD.tab==="pending"&&list.length>1?`<div class="acts" style="margin-bottom:12px"><button class="btn sm" data-act="sbulk" data-d="approved">${I("check")} Accept all ${list.length}</button><button class="btn sm g" data-act="sbulk" data-d="rejected">${I("x")} Reject all ${list.length}</button></div>`:"")+(list.length?list.map(x=>{
     const m=mapComm(x),id=x.id;
     const btn=(d,label,cls="btn sm g")=>`<button class="${cls}" data-act="sreview" data-id="${id}" data-d="${d}">${label}</button>`;
     const acts=x.status==="pending"?btn("approved",I("check")+" Accept","btn sm")+btn("rejected",I("x")+" Reject")
@@ -2026,7 +2180,7 @@ function fillSubs(){
     <p class="muted" style="font-size:13px">Added by ${esc(shown(x.by))} · ${ago(x.createdAt)}${x.director?` · Director: ${esc(x.director)}`:""}</p>
     <div class="tg">${m.genres.map(g=>`<span>${esc(g)}</span>`).join("")}${(x.moods||[]).map(k=>`<span class="m">${esc(MOOD(k)?.name||k)}</span>`).join("")}</div>
     <p class="so">${esc(x.overview)}</p><div class="acts">${acts}<button class="dz" data-act="sdel" data-id="${id}">${I("trash")} Delete</button></div></div></article>`;
-  }).join(""):`<div class="empty" style="padding:34px 10px"><h3 style="font-size:20px">${AD.tab==="pending"?"All caught up":"Nothing here"}</h3><p>${AD.tab==="pending"?"No movies are waiting for review.":"No movies in this list."}</p></div>`;
+  }).join(""):`<div class="empty" style="padding:34px 10px"><h3 style="font-size:20px">${AD.tab==="pending"?"All caught up":"Nothing here"}</h3><p>${AD.tab==="pending"?"No movies are waiting for review.":"No movies in this list."}</p></div>`);
 }
 async function refreshSubs(){
   const[o,sb]=await Promise.all([sv({action:"admin_overview"}),sv({action:"admin_submissions",status:AD.tab})]);
@@ -2057,6 +2211,34 @@ async function adminView(uid,btn){
     tr.insertAdjacentHTML("afterend",`<tr class="subrow"><td colspan="4">${l.length?`<div class="sv">${l.map(m=>`<a href="#/movie/${esc(m.id)}">${esc(m.title)}${m.year?" ("+m.year+")":""}</a>`).join("")}</div>`:'<span class="muted">No saved movies.</span>'}</td></tr>`);
   }catch(e){toast(e.message||"Couldn't load saves.")}
 }
+async function annSave(clear){
+  const text=clear?"":$("#anx").value.trim(),active=clear?false:$("#ana").checked;
+  try{const r=await sv({action:"admin_announce",text,level:$("#anl").value,active});toast(active?"Announcement published":"Announcement cleared");if(clear)$("#anx").value="";showAnnc(r.announcement&&r.announcement.active?r.announcement:null)}
+  catch(e){adminFail(e,"Couldn't save the announcement.")}
+}
+async function bulkSubs(d,btn){
+  const n=AD.subs.length;if(!confirm((d==="approved"?"Accept":"Reject")+" all "+n+" waiting movies?"))return;
+  btn.disabled=true;
+  try{const r=await sv({action:"admin_bulk_review",decision:d});toast((d==="approved"?"Accepted ":"Rejected ")+r.changed+" movies");commP=null;await refreshSubs()}
+  catch(e){btn.disabled=false;adminFail(e,"That didn't work.")}
+}
+const csvCell=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+function downloadCsv(name,rows){const b=new Blob(["﻿"+rows.map(r=>r.map(csvCell).join(",")).join("\n")],{type:"text/csv"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+async function adminExport(k){
+  try{
+    if(k==="users")downloadCsv("moodreel-accounts.csv",[["username","saves","joined","last sign-in","suspended","admin","user id"]].concat(AD.users.map(u=>[u.username,u.saves,u.createdAt,u.lastLogin,u.banned?"yes":"",u.admin?"yes":"",u.userId])));
+    else{const r=await sv({action:"admin_submissions"});downloadCsv("moodreel-movies.csv",[["title","year","status","added by","director","language","genres","moods","added","description"]].concat((r.submissions||[]).map(x=>[x.title,x.year,x.status,x.by,x.director,x.language,(x.genreIds||[]).join(" "),(x.moods||[]).join(" "),x.createdAt,x.overview])))}
+    toast("Downloaded")
+  }catch(e){adminFail(e,"Couldn't export.")}
+}
+async function adminAct2(a,uid,b){
+  const u=AD.users.find(x=>x.userId===uid),name=u?.username||"this account";
+  try{
+    if(a==="acopy"){await navigator.clipboard.writeText(uid);toast("ID copied");return}
+    if(a==="aban"){const ban=b==="1";if(!confirm((ban?"Suspend ":"Restore ")+name+"?"+(ban?" They won't be able to sign in.":"")))return;await sv({action:"admin_ban",userId:uid,ban});toast(ban?"Suspended":"Restored");adminPage();return}
+    if(a==="adel"){if(!confirm("Delete "+name+" for good? Their account, saves and unaccepted movies are removed. This can't be undone."))return;await sv({action:"admin_delete_user",userId:uid});toast("Account deleted");adminPage()}
+  }catch(e){adminFail(e,"That didn't work.")}
+}
 async function adminAct(a,uid){
   const name=AD.users.find(u=>u.userId===uid)?.username||"this account";
   const M={aclear:["admin_clear_saves",`Clear all saved movies for ${name}?`,"Saves cleared"],areset:["admin_reset_avatar",`Reset ${name}'s profile picture?`,"Picture reset"]}[a];
@@ -2066,13 +2248,17 @@ async function adminAct(a,uid){
 
 
 /* ---------- news and updates ---------- */
-const NEWS_VER="1.2";
+const NEWS_VER="1.3";
 const NEWS=[
-{v:"1.2",d:"19 Nov 2026",t:"More moods, more feels",new:1,items:[
- "<b>6 new moods:</b> Hyped, Heartbroken, Curious, Silly, Epic and Dreamy, on top of the original ten. Every mood has its own colour, Roulette reel and spot in My DNA.",
- "<b>Theater fixes:</b> the cast now sits in the centre of the screen, leaving and re-entering quickly no longer blanks the screening, the Back button closes it, and it pauses when you switch tabs.",
+{v:"1.3",d:"20 Nov 2026",t:"The theater gets a show",new:1,items:[
+ "<b>New tools</b>: press Ctrl/⌘ + K anywhere for quick search, pick an accent colour in your profile, keep a daily streak, and in the theater use the new Cheer, volume and full-screen buttons (keys C and F). The theater also runs much smoother now.",
  "<b>A new theater opening</b>: a stick figure walks in with 3D glasses and popcorn, takes his seat, and the camera pulls back on a packed house that whistles and cheers every time the screen changes section.",
  "<b>Real soundtracks in the theater</b>: each screening now plays its own film's song (Aathiram for Scene, Bindaas for Jailer 2, Atlas for Catching Fire, Hedwig's Theme for Harry Potter and more), with the synthesized score as a backup.",
+ "<b>Smoother theater:</b> far less repainting, so it runs well on slower machines, and it switches to a lighter show on its own if it ever struggles.",
+ "<b>Bigger admin panel</b> for admins: signup chart, announcements, suspend or delete accounts, bulk review, CSV export and an activity log."]},
+{v:"1.2",d:"19 Nov 2026",t:"More moods, more feels",items:[
+ "<b>6 new moods:</b> Hyped, Heartbroken, Curious, Silly, Epic and Dreamy, on top of the original ten. Every mood has its own colour, Roulette reel and spot in My DNA.",
+ "<b>Theater fixes:</b> the cast now sits in the centre of the screen, leaving and re-entering quickly no longer blanks the screening, the Back button closes it, and it pauses when you switch tabs.",
  "<b>15 more theater titles</b> on the welcome page, including every Hunger Games film, The Odyssey, Ramayana: Rise of a Legend, The Dark Knight and Avengers: Endgame. Tap any title to open its 2-minute screening.",
  "<b>Powered by</b> now shows on the welcome page too, with Vault V, Vyron and TMDB.",
  "<b>News</b> button added, so you can always see what's new."],moods:["hyped","heartbroken","curious","silly","epic","dreamy"]},
@@ -2159,10 +2345,16 @@ document.addEventListener("click",e=>{
     case"sdel":deleteSub(a.dataset.id,a);break;
     case"aview":adminView(a.dataset.u,a);break;
     case"aclear":case"areset":adminAct(a.dataset.act,a.dataset.u);break;
+    case"acopy":case"aban":case"adel":adminAct2(a.dataset.act,a.dataset.u,a.dataset.b);break;
+    case"annsave":annSave(false);break;
+    case"anncl":annSave(true);break;
+    case"sbulk":bulkSubs(a.dataset.d,a);break;
+    case"aexport":adminExport(a.dataset.k);break;
   }
 });
 document.addEventListener("change",e=>{if(e.target.id==="af-file"){const f=e.target.files&&e.target.files[0];if(f)uploadPoster(f);return}if(e.target.id==="psort"&&PP.p){PP.sort=e.target.value;fillPerson()}});
 document.addEventListener("submit",e=>{if(e.target.id==="af")submitMovie(e)});
+document.addEventListener("change",e=>{if(e.target.id==="asort"){AD.sort=e.target.value;fillAdmin()}else if(e.target.id==="aflt"){AD.flt=e.target.value;fillAdmin()}});
 document.addEventListener("click",e=>{const b=$("#af-sug");if(b&&!b.hidden&&!e.target.closest(".sugw"))b.hidden=true});
 document.addEventListener("input",e=>{
   if(currentPage==="add"){
@@ -2230,7 +2422,7 @@ function paintMe(){
   const n=shown(me.username);
   $("#mav").innerHTML=avHtml(me.avatar,n);$("#mnm").textContent=n;
   $("#nadmin").hidden=!me.isAdmin;$("#madm").hidden=!me.isAdmin;
-  $("#prh").innerHTML=`<div class="pr-av" id="prav">${avHtml(me.avatar,n)}</div><div><h3>${esc(n)}</h3><p class="muted" style="font-size:13px">${me.avatar?esc(me.avatar.name):"No picture chosen yet"}</p></div>`;
+  $("#prh").innerHTML=`<div class="pr-av" id="prav">${avHtml(me.avatar,n)}</div><div><h3>${esc(n)}</h3><p class="muted" style="font-size:13px">${me.avatar?esc(me.avatar.name):"No picture chosen yet"}</p>${me.streak>0?`<span class="streak">${I("spark")} ${me.streak}-day streak</span>`:""}</div>`;
   $("#prrm").hidden=!me.avatar;$("#pradmin").hidden=!me.isAdmin;
   try{if(me.avatar)localStorage.setItem("mr_avatar:"+me.userId,JSON.stringify(me.avatar));else localStorage.removeItem("mr_avatar:"+me.userId)}catch(e){}
   $("#pagemsg").textContent=me.isAdult===true?"Content setting: showing all movies.":"Content setting: showing movies rated PG-13 and under.";
