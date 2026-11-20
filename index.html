@@ -519,6 +519,13 @@ body{padding-bottom:env(safe-area-inset-bottom,0)}
 .tcam{position:absolute;left:0;top:0;width:1000px;height:720px;transform-origin:0 0;transition:transform 3.6s cubic-bezier(.65,0,.2,1);will-change:transform}
 .tcam.now{transition:none}
 .troom{position:absolute;left:-300px;top:-250px;width:1600px;height:1200px;overflow:visible;display:block}
+.tstick{pointer-events:none;transition:filter 2.4s}
+.ov.theater.dim .tstick{filter:brightness(.6)}
+.tcrowd{opacity:0;transition:opacity 1.1s}.troom.seen .tcrowd{opacity:1}
+.cp .ar{display:none}.troom.cheer .cp .ar{display:inline}
+.troom.cheer .cp{animation:tbob .42s ease-in-out infinite;animation-delay:var(--d,0s)}
+@keyframes tbob{50%{transform:translateY(-7px)}}
+@media(prefers-reduced-motion:reduce){.tcrowd{transition:none}.troom.cheer .cp{animation:none}}
 .tl{animation:ttw 3.4s ease-in-out infinite}
 @keyframes ttw{50%{opacity:.4}}
 .tdim{position:absolute;left:-300px;top:-250px;width:1600px;height:1200px;background:#01030b;opacity:0;transition:opacity 2.8s ease;pointer-events:none}
@@ -737,6 +744,7 @@ nav.h{transform:translateY(-112%)}
       <div class="tflick"></div><div class="tflash" id="tflash"></div>
       <div class="tcurt l"></div><div class="tcurt r"></div>
     </div>
+    <svg class="troom tstick" id="tstick" viewBox="-300 -250 1600 1200" aria-hidden="true"><defs><linearGradient id="tdoorg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff6d6"/><stop offset="1" stop-color="#ffb84d"/></linearGradient></defs><g id="tdoor"></g><g id="tfig"></g></svg>
   </div>
   <div class="tvig" aria-hidden="true"></div>
   <span class="tbadge"><i></i>Private screening · 2:00</span>
@@ -1249,7 +1257,9 @@ function watchBox(m){
   return`<div class="wbox"><b>Where to watch <small>(${esc(w.region)})</small></b>${watchRow(w.stream,"Stream")}${watchRow(w.rent,"Rent")}${watchRow(w.buy,"Buy")}<small class="muted">Streaming data from JustWatch, via TMDB.${w.link?` <a href="${w.link}" target="_blank" rel="noopener noreferrer">See the full list</a>`:""}</small></div>`;
 }
 /* ---------- the cinema room (SVG): blue acoustic walls + ceiling, blue seats, aisle, big screen. Shared by Theater Mode and the welcome preview ---------- */
+let SEATG=null;
 function roomSVG(p,low){
+  SEATG=null;
   const VX=500,VY=300,CY=-372,FY=357,SB=.51,SF=1.75,WX=500,zb=1/SB,zf=1/SF;
   let seed=11;const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
   const f=n=>(+n).toFixed(1);
@@ -1328,16 +1338,30 @@ function roomSVG(p,low){
     }
     add(s,`<g opacity="${(.7+.3*r/rows).toFixed(2)}">${g}</g>`);
   }
-  /* the person standing in the aisle, seen from behind */
-  {const s=.78,bx=500,by=300+FY*s;
-   add(s,`<g transform="translate(${bx} ${f(by)}) scale(${(s*.75).toFixed(3)})"><ellipse cx="0" cy="3" rx="34" ry="7" fill="#000" opacity=".5"/><rect x="-19" y="-80" width="15" height="80" rx="4" fill="#1a2034"/><rect x="4" y="-80" width="15" height="80" rx="4" fill="#1a2034"/><rect x="-21" y="-6" width="19" height="7" rx="3" fill="#0b0d16"/><rect x="2" y="-6" width="19" height="7" rx="3" fill="#0b0d16"/><path d="M-27 -82 L27 -82 L24 -140 Q0 -150 -24 -140 Z" fill="#2c3342"/><rect x="-37" y="-136" width="11" height="58" rx="5" fill="#2c3342"/><rect x="26" y="-136" width="11" height="58" rx="5" fill="#2c3342"/><rect x="-6" y="-152" width="12" height="14" rx="4" fill="#3a2f2a"/><circle cx="0" cy="-163" r="14" fill="#241c18"/><path d="M-24 -140 Q0 -150 24 -140" fill="none" stroke="#a9ceff" stroke-opacity=".6" stroke-width="2"/><circle cx="0" cy="-163" r="14" fill="none" stroke="#a9ceff" stroke-opacity=".45" stroke-width="1.5"/></g>`);}
+  /* a full house: everyone has their 3D glasses on (one seat stays free for the stick figure) */
+  {const pal=["#2a2230","#3a2a22","#1d2433","#4a3b2e","#26262e","#33281f"];
+   for(let r=0;r<rows;r++){
+    const z=z0-r*dzr,s=1/z,yf=FY+120*(s-.66);let g="";
+    for(const sg of[-1,1])for(let k=0;k<7;k++){
+      const xa=sg>0?62+k*(sw+gap):-(62+k*(sw+gap))-sw;
+      if(r===2&&sg<0&&k===0){SEATG={s,X:xa+sw/2,xa,yf,op:.7+.3*r/rows,sw,sh};continue}
+      if(rnd()<.07)continue;
+      const cx=500+(xa+sw/2)*s,y0=300+(yf-sh)*s,hy=y0-10*s,col=pal[(rnd()*pal.length)|0],cl="hsl("+((rnd()*360)|0)+" 28% "+(16+((rnd()*10)|0))+"%)";
+      g+=`<g class="cp" style="--d:${(rnd()*.5).toFixed(2)}s"><path class="ar" d="M${f(cx-15*s)} ${f(y0+6*s)}L${f(cx-25*s)} ${f(y0-32*s)}M${f(cx+15*s)} ${f(y0+6*s)}L${f(cx+25*s)} ${f(y0-32*s)}" stroke="${cl}" stroke-width="${f(6*s)}" stroke-linecap="round" fill="none"/><ellipse cx="${f(cx)}" cy="${f(y0+7*s)}" rx="${f(18*s)}" ry="${f(11*s)}" fill="${cl}"/><circle cx="${f(cx)}" cy="${f(hy)}" r="${f(9*s)}" fill="${col}"/>`;
+      if(rnd()<.85)g+=`<rect x="${f(cx-10*s)}" y="${f(hy-1.5*s)}" width="${f(10*s)}" height="${f(3.2*s)}" fill="#ff3b4d"/><rect x="${f(cx)}" y="${f(hy-1.5*s)}" width="${f(10*s)}" height="${f(3.2*s)}" fill="#30d5ff"/>`;
+      g+="</g>";
+    }
+    add(s+.0002,`<g class="tcrowd">${g}</g>`);
+   }
+  }
   items.sort((a,b)=>a[0]-b[0]);
   o+=items.map(i=>i[1]).join("");
   o+=`<ellipse cx="500" cy="${f(300+FY*.55)}" rx="360" ry="110" fill="url(#${p}fg)" opacity=".45"/>`;
   return o;
 }
 /* ---------- Theater Mode: a private 2-minute screening in a cinema room ---------- */
-const SHOW=120,MARKS=[0,5,20,60,92,115];   // 0 countdown · 1 title · 2 story · 3 cast · 4 where to watch · 5 the end
+const WALK0=.5,WALK1=3.4,UP1=5.7,STEP1=6.5,SIT1=7.4,CAM_OUT=6,LIGHTS=8.2,CURT=8.8;
+const SHOW=120,MARKS=[0,13,27,63,93,115];   // 0 walk-in + countdown · 1 title · 2 story · 3 cast · 4 where to watch · 5 the end
 const IC_PAUSE='<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>',IC_REPLAY='<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>';
 let CURM=null,TH={t:0,run:false,iv:0,last:0,stage:-1,wi:0,ci:0,lead:-1,words:[],cast:[],pose:{},cur:"wide",low:null,drag:false};
 const fmt=s=>{s=Math.max(0,Math.floor(s));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")};
@@ -1370,7 +1394,8 @@ function theaterLayout(){
   const kw=port?kc*.78:Math.max(vw/1000,vh/720),cy=port?vh*.4:vh*.45;
   ov.style.setProperty("--kc",kc.toFixed(4));
   ov.style.setProperty("--fs",Math.max(11,Math.min(24,484*kc/(port?31:36))).toFixed(1)+"px");
-  TH.pose={wide:port?[vw/2-kw*500,cy-kw*319.5,kw]:[vw/2-kw*500,vh/2-kw*360,kw],close:[vw/2-kc*500,cy-kc*319.5,kc]};
+  const zk=port?1.12:1.7,fx=300,fy0=500;
+  TH.pose={door:[vw/2-kw*zk*fx,(port?vh*.45:vh/2)-kw*zk*fy0,kw*zk],wide:port?[vw/2-kw*500,cy-kw*319.5,kw]:[vw/2-kw*500,vh/2-kw*360,kw],close:[vw/2-kc*500,cy-kc*319.5,kc]};
 }
 function theaterPose(name,instant){
   TH.cur=name;const[x,y,k]=TH.pose[name],cam=$("#tcam");
@@ -1383,15 +1408,17 @@ function paintPlay(){
   $("#treplay").textContent="Replay "+fmt(SHOW);
 }
 function update(force){
-  const ov=$("#ovtheater"),t=TH.t,st=stageOf(t);
+  const ov=$("#ovtheater"),t=TH.t,st=stageOf(t),first0=TH.stage<0;
   if(force||st!==TH.stage){
     const first=TH.stage<0;TH.stage=st;ov.dataset.stage=String(st);musicStage(st,first);
-    theaterPose(st>=2&&st<5?"close":"wide",first);
+    if(!first&&st>=1){crowdCheer(1);cheerVis()}
     if(!first&&!perfLow()){const f=$("#tflash");f.classList.remove("go");void f.offsetWidth;f.classList.add("go")}
   }
-  ov.classList.toggle("open",t>=.4);
-  ov.classList.toggle("dim",t>=1.3&&t<MARKS[5]);
-  if(st===0){const n=t<1.6?0:t<2.6?3:t<3.6?2:t<4.6?1:0;if(n!==TH.lead){TH.lead=n;tickSfx(n);const b=$("#tcount");b.textContent=n||"";b.classList.remove("pop");void b.offsetWidth;if(n)b.classList.add("pop")}}
+  const opn=t>=CURT;ov.classList.toggle("open",opn);if(opn&&!TH.op&&!force)crowdCheer(0);TH.op=opn;
+  $("#troom").classList.toggle("seen",t>=CAM_OUT+1);
+  {const want=t<CAM_OUT?"door":st>=2&&st<5?"close":"wide";if(want!==TH.cur||first0)theaterPose(want,first0)}
+  ov.classList.toggle("dim",t>=LIGHTS&&t<MARKS[5]);
+  if(st===0){const e=MARKS[1],n=t<e-3.4?0:t<e-2.4?3:t<e-1.4?2:t<e-.4?1:0;if(n!==TH.lead){TH.lead=n;tickSfx(n);const b=$("#tcount");b.textContent=n||"";b.classList.remove("pop");void b.offsetWidth;if(n)b.classList.add("pop")}}
   /* the story lights up word by word */
   const N=TH.words.length,p=Math.max(0,Math.min(1,(t-MARKS[2]-1.5)/(MARKS[3]-MARKS[2]-6))),L=t<MARKS[2]?0:Math.round(p*N);
   if(L!==TH.wi){for(let i=Math.min(TH.wi,L);i<Math.max(TH.wi,L);i++)TH.words[i].classList.toggle("lit",i<L);TH.wi=L}
@@ -1412,9 +1439,85 @@ function tick(){
 function seek(t){
   TH.t=Math.max(0,Math.min(SHOW,t));
   TH.words.forEach(w=>w.classList.remove("lit"));TH.wi=0;TH.lead=-1;
-  update(true);if(TH.t>=SHOW){TH.run=false}else musicLevel(.5,.3);paintPlay();
+  songSeek(TH.t);update(true);if(TH.t>=SHOW){TH.run=false}else musicLevel(.5,.3);paintPlay();
 }
 function setRun(on){TH.run=on;TH.last=performance.now();paintPlay();if(on)musicLevel(.5,.3);musicRun(on)}
+
+/* ---------- the opening: a stick figure walks in with 3D glasses and popcorn, sits down, then the camera pulls back on a full house ---------- */
+const eio=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2,cl01=x=>Math.max(0,Math.min(1,x)),fyAt=s=>300+(357+120*(s-.66))*s,INK="#f4f7ff";
+function bucketSVG(x,y,k,tilt){return`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${tilt||0}) scale(${k||1})"><path d="M-14 0H14L10 30H-10Z" fill="#fff"/><path d="M-10 0H-4L-4.4 30H-7.4ZM4 0H10L7.4 30H4.4Z" fill="#e0293a"/><path d="M-14 0H14L10 30H-10Z" fill="none" stroke="#9a1624" stroke-width="1.6"/><circle cx="-9" cy="-3" r="6.5" fill="#ffe7a1"/><circle cx="-2" cy="-8" r="7" fill="#fff3c4"/><circle cx="6" cy="-4" r="6.5" fill="#ffe7a1"/><circle cx="12" cy="-8" r="5" fill="#fff3c4"/><circle cx="1" cy="-2" r="5.5" fill="#ffd978"/></g>`}
+function doorX(){const g=SEATG;return g?502-500*(g.s+.14):72}
+function doorSVG(t){
+  const g=SEATG;if(!g)return"";const sd=g.s+.14,x=doorX(),y=fyAt(sd),lit=t<WALK1+.5?1:.12;
+  return`<rect x="${x-24}" y="${y-176}" width="48" height="12" rx="2" fill="#13a35a"/><text x="${x}" y="${y-167}" text-anchor="middle" font-size="8" font-weight="700" fill="#eafff3" font-family="sans-serif">ENTRANCE</text><rect x="${x-34}" y="${y-160}" width="68" height="160" rx="3" fill="#0a0f24" stroke="#5b79c9" stroke-width="3"/><rect x="${x-28}" y="${y-154}" width="56" height="154" fill="url(#tdoorg)" opacity="${lit}" style="transition:opacity .6s"/><polygon points="${x+28},${y} ${x+210},${y+2} ${x+170},${y+22} ${x+28},${y+12}" fill="#ffd27a" opacity="${(.22*lit).toFixed(2)}"/>`;
+}
+function figSVG(t,ch,now){
+  const g=SEATG;if(!g||t<WALK0)return"";
+  const sd=g.s+.14,seatX=500+g.X*g.s,L=78,W=5.6,dx=doorX();
+  let x,s,view="back",q=0,ph=0,mv=1;
+  if(t<WALK1){x=dx+(500-dx)*eio((t-WALK0)/(WALK1-WALK0));s=sd;view="side";ph=(t-WALK0)*7}
+  else if(t<UP1){x=500;s=sd+(g.s-sd)*eio((t-WALK1)/(UP1-WALK1));ph=(t-WALK1)*7}
+  else if(t<STEP1){x=500+(seatX-500)*eio((t-UP1)/(STEP1-UP1));s=g.s;ph=(t-UP1)*9}
+  else{x=seatX;s=g.s;mv=0;q=eio(cl01((t-STEP1)/(SIT1-STEP1)))}
+  const seated=q>=1,cheer=seated&&ch,bob=mv?-Math.abs(Math.sin(ph))*2.5:0,jump=cheer?-Math.abs(Math.sin(now/130))*7:0,dy=q*40+jump;
+  const stk=`stroke="${INK}" stroke-width="${W}" stroke-linecap="round" stroke-linejoin="round" fill="none"`,N=-128+bob+dy,H=-78+bob+dy;
+  let b=`<ellipse cx="0" cy="2" rx="28" ry="6" fill="#000" opacity="${(.35*(1-q)).toFixed(2)}"/>`;
+  if(view==="side"){
+    const a=Math.sin(ph)*.55,c=Math.cos(ph),y1=H+L*Math.cos(a)-Math.max(0,c)*7,y2=H+L*Math.cos(a)-Math.max(0,-c)*7;
+    b+=`<path ${stk} d="M0 ${N}V${H}M0 ${H}L${(L*Math.sin(a)).toFixed(1)} ${y1.toFixed(1)}M0 ${H}L${(-L*Math.sin(a)).toFixed(1)} ${y2.toFixed(1)}M0 ${N+8}L${(48*Math.sin(-a*.9)).toFixed(1)} ${(N+8+44*Math.cos(a*.9)).toFixed(1)}M0 ${N+8}L16 ${N+32}L34 ${N+24}"/>`;
+    b+=bucketSVG(40,N+2,1,0);
+    b+=`<circle cx="3" cy="${N-18}" r="17" fill="#101a3a" stroke="${INK}" stroke-width="${W}"/><path d="M2 ${N-22}L-6 ${N-20}" stroke="#111" stroke-width="2.4" stroke-linecap="round"/><rect x="5" y="${N-27}" width="14" height="9" rx="2" fill="#30d5ff" stroke="#111" stroke-width="1.4"/><rect x="10" y="${N-24}" width="14" height="9" rx="2" fill="#ff3b4d" stroke="#111" stroke-width="1.4" opacity=".92"/>`;
+  }else{
+    const sw1=Math.sin(ph),l1=-(Math.max(0,sw1))*9*(1-q),l2=-(Math.max(0,-sw1))*9*(1-q),ar=mv?sw1*6:0;
+    b+=`<path ${stk} d="M0 ${N}V${H}M-7 ${H}L-9 ${l1.toFixed(1)}M7 ${H}L9 ${l2.toFixed(1)}M-15 ${N+8}H15"/>`;
+    if(cheer){
+      b+=`<path ${stk} d="M-15 ${N+8}L-34 ${N-38}M15 ${N+8}L34 ${N-38}"/>`+bucketSVG(36,N-70,1.05,22);
+      for(let i=0;i<6;i++){const u=((now/700+i*.17)%1),px=36+Math.sin(i*2.3+now/260)*20,py=N-72-u*70;b+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4.2" fill="#fff3c4" opacity="${(1-u).toFixed(2)}"/>`}
+    }else{
+      b+=`<path ${stk} d="M-15 ${N+8}L-20 ${(N+44-ar).toFixed(1)}L-17 ${(N+64-ar).toFixed(1)}M15 ${N+8}L25 ${N+34}L32 ${N+28}"/>`+bucketSVG(36,N+6,.95,0);
+    }
+    const hb=seated&&!cheer?Math.sin(now/520)*1.6:0;
+    b+=`<g transform="translate(${hb.toFixed(1)} 0)"><circle cx="0" cy="${N-18}" r="17" fill="#101a3a" stroke="${INK}" stroke-width="${W}"/><rect x="-17" y="${N-21}" width="17" height="5" fill="#ff3b4d"/><rect x="0" y="${N-21}" width="17" height="5" fill="#30d5ff"/><rect x="-24" y="${N-24}" width="8" height="10" rx="2" fill="#ff3b4d" stroke="#111" stroke-width="1.4"/><rect x="16" y="${N-24}" width="8" height="10" rx="2" fill="#30d5ff" stroke="#111" stroke-width="1.4"/></g>`;
+  }
+  let o=`<g transform="translate(${x.toFixed(1)} ${fyAt(s).toFixed(1)}) scale(${s.toFixed(3)})">${b}</g>`;
+  /* the seat back hides his legs once he steps into the row */
+  const X=500+g.xa*s,Y=300+(g.yf-g.sh)*s,w=g.sw*s,h=g.sh*s;
+  o+=`<rect x="${X.toFixed(1)}" y="${Y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${(11*s).toFixed(1)}" fill="url(#trst)"/><rect x="${X.toFixed(1)}" y="${Y.toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${(11*s).toFixed(1)}" fill="#02040d" opacity="${(1-g.op).toFixed(2)}" stroke="#9cc6ff" stroke-opacity=".55" stroke-width="${(1.3*s).toFixed(2)}"/>`;
+  return o;
+}
+function curT(){return Math.min(SHOW,TH.run?TH.t+(performance.now()-TH.last)/1000:TH.t)}
+function figFrame(){
+  TH.raf=0;if(!$("#ovtheater").classList.contains("on"))return;
+  const now=performance.now(),t=curT(),ch=now<TH.cheerEnd,sig=t<SIT1+.3||ch;
+  if(sig||now-TH.fdraw>200){TH.fdraw=now;$("#tfig").innerHTML=figSVG(t,ch,now);if(t<WALK1+1||TH.dtS!==1){$("#tdoor").innerHTML=doorSVG(t);TH.dtS=t<WALK1+1?0:1}}
+  TH.raf=requestAnimationFrame(figFrame);
+}
+function cheerVis(){const r=$("#troom");r.classList.add("cheer");TH.cheerEnd=performance.now()+2600;clearTimeout(TH.chT);TH.chT=setTimeout(()=>r.classList.remove("cheer"),2600)}
+/* cheering, clapping and whistling, synthesised from filtered noise and oscillators (big = a section change, small = the curtains opening) */
+function crowdCheer(k){
+  const c=MU.ctx;if(!c||!MU.on||c.state!=="running"||!MU.noise)return;
+  if(k===0)cheerVis();
+  const big=k>=1,t0=c.currentTime+.03,dur=big?2.6:1.5,v=big?1:.6,out=MU.master,R=Math.random;
+  const nz=(f1,q,type)=>{const src=c.createBufferSource();src.buffer=MU.noise;src.loop=true;src.loopStart=R()*.5;const fl=c.createBiquadFilter();fl.type=type||"bandpass";fl.frequency.value=f1;fl.Q.value=q;src.connect(fl);return[src,fl]};
+  {const[src,fl]=nz(1200,.6),g=c.createGain();g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.5*v,t0+.35);g.gain.setValueAtTime(.5*v,t0+dur*.5);g.gain.exponentialRampToValueAtTime(.001,t0+dur+.5);fl.connect(g);g.connect(out);src.start(t0);src.stop(t0+dur+.6)}
+  for(let i=0;i<(big?8:4);i++){
+    const o=c.createOscillator(),fl=c.createBiquadFilter(),g=c.createGain(),st=t0+R()*.4,f0=150+R()*260,d=.7+R()*.8;
+    o.type="sawtooth";o.frequency.setValueAtTime(f0,st);o.frequency.linearRampToValueAtTime(f0*1.45,st+d*.5);o.frequency.linearRampToValueAtTime(f0*1.1,st+d);
+    fl.type="bandpass";fl.frequency.value=700+R()*700;fl.Q.value=2.2;g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(.07*v,st+.12);g.gain.linearRampToValueAtTime(0,st+d);
+    o.connect(fl);fl.connect(g);g.connect(out);o.start(st);o.stop(st+d+.05);
+  }
+  for(let i=0;i<(big?26:12);i++){
+    const st=t0+.1+R()*dur,[src,fl]=nz(2200+R()*1800,.8,"highpass"),g=c.createGain();
+    g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(.16*v,st+.004);g.gain.exponentialRampToValueAtTime(.001,st+.07);fl.connect(g);g.connect(out);src.start(st);src.stop(st+.1);
+  }
+  for(let i=0;i<(big?3:1);i++){
+    const o=c.createOscillator(),lf=c.createOscillator(),lg=c.createGain(),g=c.createGain(),st=t0+.1+R()*.9,d=.55+R()*.5,f0=2100+R()*900;
+    o.type="sine";o.frequency.setValueAtTime(f0,st);o.frequency.exponentialRampToValueAtTime(f0*1.35,st+d*.35);o.frequency.exponentialRampToValueAtTime(f0*1.12,st+d);
+    lf.frequency.value=7+R()*3;lg.gain.value=28;lf.connect(lg);lg.connect(o.frequency);
+    g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(.09*v,st+.05);g.gain.setValueAtTime(.09*v,st+d*.7);g.gain.linearRampToValueAtTime(0,st+d);
+    o.connect(g);g.connect(out);o.start(st);lf.start(st);o.stop(st+d+.05);lf.stop(st+d+.05);
+  }
+}
 function openTheater(m){
   if(!m)return;
   const ov=$("#ovtheater");CURM=m;clearTimeout(TH.ct);buildRoom();theaterStage(m);theaterLayout();
@@ -1424,6 +1527,7 @@ function openTheater(m){
   update(true);TH.run=true;TH.last=performance.now();paintPlay();
   clearInterval(TH.iv);TH.iv=setInterval(tick,100);
   musicStart(m);musicStage(0,true);
+  TH.op=false;TH.cheerEnd=0;TH.fdraw=0;TH.dtS=-1;$("#troom").classList.remove("cheer","seen");cancelAnimationFrame(TH.raf);TH.raf=requestAnimationFrame(figFrame);
   $("#ovtheater").focus({preventScroll:true});
 }
 
@@ -1474,8 +1578,17 @@ function musicSched(){
   const c=MU.ctx;if(!c||c.state!=="running")return;
   while(MU.next<c.currentTime+.8){playBar(Math.max(MU.next,c.currentTime+.05));MU.next+=4}
 }
+/* real songs: each theater film plays its own soundtrack (files live in the music/ folder) */
+const SONGS=[[/kantara.*(chapter|2)/i,"kantara-chapter-1"],[/irumudi/i,"irumudi"],[/mockingjay.*(part\s*(2|two|ii)\b)/i,"horn-of-plenty"],[/catching\s*fire/i,"hunger-games-catching-fire"],[/mockingjay.*(part\s*(1|one|i)\b)/i,"hunger-games-mockingjay-1"],[/songbirds|ballad of/i,"hunger-games-songbirds-snakes"],[/hunger games(?!.*mockingjay)/i,"hunger-games"],
+[/^scene$/i,"scene"],[/jailer\s*(2|ii)\b/i,"jailer-2"],[/^jailer$/i,"jailer"],[/raja the great/i,"raja-the-great"],[/^kantara(?!.*(2|chapter))/i,"kantara"],[/odyssey/i,"the-odyssey"],[/ramayana/i,"ramayana"],[/dark knight/i,"the-dark-knight"],[/endgame/i,"avengers-endgame"],[/^avatar(?!.*(water|fire))/i,"avatar"],[/harry potter.*(sorcerer|philosopher)/i,"harry-potter"],[/godfather(?!.*(part|ii))/i,"the-godfather"],[/gladiator(?!.*(2|ii))/i,"gladiator"],[/star wars.*(new hope|episode (4|iv))|^star wars$/i,"star-wars"],[/^rrr/i,"rrr"]];
+function songFor(m){const t=(m&&m.title||"").trim();for(const [re,f] of SONGS)if(re.test(t))return"music/"+f+".mp3";return null}
+let SGT=0;
+function songLevel(v){const a=MU.song;if(!a)return;clearInterval(SGT);SGT=setInterval(()=>{const d=v-a.volume;if(Math.abs(d)<.02){a.volume=Math.max(0,Math.min(1,v));clearInterval(SGT)}else a.volume=Math.max(0,Math.min(1,a.volume+d*.18))},40)}
+function songSeek(t){const a=MU.song;if(!a)return;try{const d=a.duration;a.currentTime=isFinite(d)&&d>0?t%d:t}catch(e){}}
+function songPlay(){const a=MU.song;if(!a)return;const r=a.play();if(r&&r.catch)r.catch(()=>{})}
+function songFail(){if(!MU.song)return;MU.song=null;clearInterval(SGT);if(MU.ctx){MU.master.gain.value=MU.on?.5:0;MU.next=MU.ctx.currentTime+.1;musicSched();clearInterval(MU.iv);MU.iv=setInterval(musicSched,200)}}
 function musicStage(st,first){
-  MU.stage=st;if(!MU.ctx||!MU.on||first)return;
+  MU.stage=st;if(MU.song||!MU.ctx||!MU.on||first)return;
   const t=MU.ctx.currentTime+.03;
   if(st===1){swell(t-.0,1.6,.18,300,3200);boom(t+1.5,.28)}
   else if(st===5){[0,4,7,12].forEach((i,k)=>pluck(t+k*.14,MU.root+24+(MU.minor&&i===4?3:i),.1))}
@@ -1491,28 +1604,39 @@ function musicStart(m){
   MU.minor=sad;MU.root=[45,48,50,52,53,55][hash(m&&m.title)%6]+12;MU.bar=0;MU.next=c.currentTime+.1;
   c.resume&&c.resume();
   MU.master.gain.linearRampToValueAtTime(MU.on?.5:0,c.currentTime+2.5);
-  musicSched();clearInterval(MU.iv);MU.iv=setInterval(musicSched,200);
-  // curtains opening
-  if(MU.on)swell(c.currentTime+.35,1.8,.14,200,2600);
+  const sp=songFor(m);MU.song=null;
+  if(sp){
+    const a=new Audio(sp);a.loop=true;a.preload="auto";a.volume=0;MU.song=a;
+    a.addEventListener("error",songFail);
+    a.addEventListener("loadedmetadata",()=>{if(MU.song===a&&TH.t>1)songSeek(TH.t)});
+    MU.master.gain.value=.5;songPlay();if(!TH.run)a.pause();songLevel(MU.on?.8:0);
+  }else{
+    musicSched();clearInterval(MU.iv);MU.iv=setInterval(musicSched,200);
+    // curtains opening
+    if(MU.on)swell(c.currentTime+.35,1.8,.14,200,2600);
+  }
   paintMute();
 }
 function musicStop(now){
-  clearInterval(MU.iv);const c=MU.ctx;if(!c)return;MU.ctx=null;
+  clearInterval(MU.iv);
+  if(MU.song){const a=MU.song;MU.song=null;clearInterval(SGT);let v=a.volume;const k=setInterval(()=>{v-=now?1:.12;if(v<=0){clearInterval(k);try{a.pause();a.removeAttribute("src");a.load()}catch(e){}}else a.volume=v},40)}
+  const c=MU.ctx;if(!c)return;MU.ctx=null;
   try{MU.master.gain.cancelScheduledValues(c.currentTime);MU.master.gain.setTargetAtTime(0,c.currentTime,now?.02:.15)}catch(e){}
   setTimeout(()=>{try{c.close()}catch(e){}},now?100:900);
 }
-function musicLevel(v,tc){const c=MU.ctx;if(!c)return;MU.master.gain.cancelScheduledValues(c.currentTime);MU.master.gain.setTargetAtTime(MU.on?v:0,c.currentTime,tc||.15)}
-function musicRun(on){const c=MU.ctx;if(!c)return;if(on&&MU.on)c.resume&&c.resume();else c.suspend&&c.suspend()}
+function musicLevel(v,tc){const c=MU.ctx;if(!c)return;if(MU.song){songLevel(MU.on?Math.min(1,v*1.6):0);return}MU.master.gain.cancelScheduledValues(c.currentTime);MU.master.gain.setTargetAtTime(MU.on?v:0,c.currentTime,tc||.15)}
+function musicRun(on){const c=MU.ctx;if(!c)return;if(MU.song){if(on&&MU.on){songPlay();c.resume&&c.resume()}else{MU.song.pause();c.suspend&&c.suspend()}return}if(on&&MU.on)c.resume&&c.resume();else c.suspend&&c.suspend()}
 $("#tmute").addEventListener("click",()=>{
   MU.on=!MU.on;try{localStorage.setItem("mr_music",MU.on?"1":"0")}catch(e){}paintMute();
   const c=MU.ctx;if(!c)return;
+  if(MU.song){songLevel(MU.on?.8:0);if(MU.on&&TH.run)songPlay();return}
   MU.master.gain.cancelScheduledValues(c.currentTime);MU.master.gain.setTargetAtTime(MU.on?.5:0,c.currentTime,.12);
   if(MU.on&&TH.run)c.resume&&c.resume();
 });
 paintMute();
 function closeTheater(){
   const ov=$("#ovtheater");if(!ov.classList.contains("on"))return;
-  clearInterval(TH.iv);TH.run=false;ov.classList.add("out");musicStop();
+  clearInterval(TH.iv);TH.run=false;cancelAnimationFrame(TH.raf);ov.classList.add("out");musicStop();
   clearTimeout(TH.ct);
   TH.ct=setTimeout(()=>{ov.classList.remove("on","open","dim","out");ov.dataset.stage="0";document.body.style.overflow=""},still()?0:360);
 }
@@ -1947,6 +2071,8 @@ const NEWS=[
 {v:"1.2",d:"19 Nov 2026",t:"More moods, more feels",new:1,items:[
  "<b>6 new moods:</b> Hyped, Heartbroken, Curious, Silly, Epic and Dreamy, on top of the original ten. Every mood has its own colour, Roulette reel and spot in My DNA.",
  "<b>Theater fixes:</b> the cast now sits in the centre of the screen, leaving and re-entering quickly no longer blanks the screening, the Back button closes it, and it pauses when you switch tabs.",
+ "<b>A new theater opening</b>: a stick figure walks in with 3D glasses and popcorn, takes his seat, and the camera pulls back on a packed house that whistles and cheers every time the screen changes section.",
+ "<b>Real soundtracks in the theater</b>: each screening now plays its own film's song (Aathiram for Scene, Bindaas for Jailer 2, Atlas for Catching Fire, Hedwig's Theme for Harry Potter and more), with the synthesized score as a backup.",
  "<b>15 more theater titles</b> on the welcome page, including every Hunger Games film, The Odyssey, Ramayana: Rise of a Legend, The Dark Knight and Avengers: Endgame. Tap any title to open its 2-minute screening.",
  "<b>Powered by</b> now shows on the welcome page too, with Vault V, Vyron and TMDB.",
  "<b>News</b> button added, so you can always see what's new."],moods:["hyped","heartbroken","curious","silly","epic","dreamy"]},
